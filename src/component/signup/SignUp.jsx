@@ -11,7 +11,6 @@ const SignUp = () => {
 
   const formik = useFormik({
     initialValues: {
-      id: uuidv4(),
       username: '',
       userpassword: '',
       role: 'guest'

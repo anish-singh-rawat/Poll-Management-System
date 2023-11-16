@@ -32,7 +32,7 @@ export const signupSlice = createSlice({
   },
 });
 
-export const signup = (payload) => async (dispatch) => { 
+export const signup = (payload) =>  async () =>  { 
   dispatch(signupSlice.actions.startLoading());
   try {
     const response = await axiosInstance.post(
