@@ -1,14 +1,16 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom';
 import './SignUp.css'
 import { useFormik } from 'formik'
 import { schema } from '../../utilities/utilities'
-import { v4 as uuidv4 } from "uuid";
-import { dispatch } from '../../Redux/store/store'
-import { signup, signupSlice } from '../../Redux/slice/signUp'
+import { signup } from '../../Redux/slice/signUp'
+import { useDispatch } from 'react-redux';
 
 const SignUp = () => {
 
+  const dispatch= useDispatch()
+
+  const navigate = useNavigate()
   const formik = useFormik({
     initialValues: {
       username: '',
@@ -18,14 +20,16 @@ const SignUp = () => {
     validationSchema: schema,
     onSubmit: (values, actions) => {
       try {
-        dispatch(signup(values));
-      } catch (error) { }
-      actions.resetForm();
+        dispatch(signup(values)); 
+        navigate("/login")
+      } catch (error) {
+        console.log(error);
+       }
     },
   })
 
   return (
-    <div className="container">
+    <div className="container-fluid containe-for-sub-box">
       <div className="row">
         <div className="col">
           <div className="parent-form-div-sign-up">

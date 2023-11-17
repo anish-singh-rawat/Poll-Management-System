@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import axiosInstance from "../../utilities/axios";
 import { dispatch } from "../store/store";
+import axios from "axios";
 
 const initialState = {
   isLoading: false,
@@ -8,12 +8,12 @@ const initialState = {
   isError: false,
   data: {},
 };
-
-export const signupSlice = createSlice({
+const signupSlice = createSlice({
   name: "signup",
-  initialState: initialState,
+  initialState,
   reducers: {
     startLoading(state) {
+      console.log(state);
       state.isLoading = true;
       state.isError = false;
     },
@@ -21,29 +21,31 @@ export const signupSlice = createSlice({
       state.isLoading = false;
       state.isError = false;
       state.isSuccess = true;
-      state.data = { ...action.payload };
+      state.data = action.payload;
     },
     hasError(state, action) {
       state.isError = true;
       state.isLoading = false;
       state.isSuccess = false;
-      state.data = { ...action.payload };
+      state.data = action.payload;
     },
   },
 });
 
-export const signup = (payload) =>  async () =>  { 
-  dispatch(signupSlice.actions.startLoading());
-  try {
-    const response = await axiosInstance.post(
-      `add_user?username=${payload.username}&password=${payload.userpassword}&role=${payload.role}`,
-      payload 
-    );
-    dispatch(signupSlice.actions.loginSuccess(response.data));
-  } catch (e) {
-    dispatch(signupSlice.actions.hasError(e));
+export function signup(payload) {
+  return async () => {
+
+    dispatch(signupSlice.actions.startLoading());
+
+    try {
+      const response = await
+        axios.post(`https://etechpolltesting.onrender.com/add_user?username=${payload.username}&password=${payload.userpassword}&role=${payload.role}`);
+      dispatch(signupSlice.actions.loginSuccess(response.data.data));
+    } catch (e) {
+      dispatch(signupSlice.actions.hasError(e));
+    }
   }
-};
+}
 
 export const { startLoading, hasError, loginSuccess } = signupSlice.actions;
 export default signupSlice.reducer;
