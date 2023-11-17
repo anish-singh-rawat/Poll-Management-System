@@ -1,16 +1,14 @@
 import React from 'react'
+import { dispatch } from '../../Redux/store/store';
 import { Link, useNavigate } from 'react-router-dom';
 import './SignUp.css'
 import { useFormik } from 'formik'
 import { schema } from '../../utilities/utilities'
 import { signup } from '../../Redux/slice/signUp'
-import { useDispatch } from 'react-redux';
 
 const SignUp = () => {
-
-  const dispatch= useDispatch()
-
   const navigate = useNavigate()
+
   const formik = useFormik({
     initialValues: {
       username: '',
@@ -22,9 +20,7 @@ const SignUp = () => {
       try {
         dispatch(signup(values)); 
         navigate("/login")
-      } catch (error) {
-        console.log(error);
-       }
+      } catch (error) { }
     },
   })
 
@@ -74,7 +70,7 @@ const SignUp = () => {
                     onChange={formik.handleChange}
                     className='select-role-options mt-3'>
                     <option value="guest">Guest</option>
-                    <option value="admit">Admin</option>
+                    <option value="admin">Admin</option>
 
                   </select>
                 </div>

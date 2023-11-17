@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { dispatch } from "../store/store";
 import axios from "axios";
 
 const initialState = {
@@ -8,7 +9,7 @@ const initialState = {
   data: {},
 };
 
-const loginSlice = createSlice({
+ const loginSlice = createSlice({
   name: "login",
   initialState,
   reducers: {
@@ -37,15 +38,17 @@ const loginSlice = createSlice({
   },
 });
 
-export const login = (payload) => async (dispatch) => {
-  dispatch(loginSlice.actions.startLoading());
-  try {
-    const response = await axios.post(`https://etechpolltesting.onrender.com/login`);
-    dispatch(loginSlice.actions.loginSuccess(response.data));
-  } catch (e) {
-    dispatch(loginSlice.actions.hasError(e));
+export function login(payload) {
+ return async () => {
+   dispatch(loginSlice.actions.startLoading());
+    try {
+      const response = await  axios.post(`https://etechpolltesting.onrender.com/login?username=${payload.username}&password=${payload.userpassword}`, { payload });
+      dispatch(loginSlice.actions.loginSuccess(response.data));
+    } catch (e) {
+     dispatch(loginSlice.actions.hasError(e));
+    }
   }
-};
+}
 
 export const { startLoading, hasError, loginSuccess, resetReducer } = loginSlice.actions;
 export default loginSlice.reducer;

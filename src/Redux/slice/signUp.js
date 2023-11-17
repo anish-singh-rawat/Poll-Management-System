@@ -13,7 +13,6 @@ const signupSlice = createSlice({
   initialState,
   reducers: {
     startLoading(state) {
-      console.log(state);
       state.isLoading = true;
       state.isError = false;
     },

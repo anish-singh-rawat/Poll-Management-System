@@ -1,22 +1,21 @@
 import React, { useEffect } from 'react'
+import { dispatch } from '../../Redux/store/store';
 import './Login.css'
 import { Link, useNavigate } from 'react-router-dom'
 import { useFormik } from 'formik';
 import { schema } from '../../utilities/utilities';
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { login, resetReducer } from '../../Redux/slice/login';
-import { useDispatch, useSelector } from 'react-redux';
+import {useSelector } from 'react-redux';
 import { jwtDecode } from 'jwt-decode';
 
 const Login = () => {
 
-  const dispatch= useDispatch()
-
+  const navigate = useNavigate()
   const loginSlice = useSelector((state) => state.loginSlice);
   const status = useSelector((state) => state.loginSlice.isLoading);
   const error = useSelector((state) => state.loginSlice.isError);
-  const navigate = useNavigate()
 
 
   useEffect(() => {
@@ -25,15 +24,16 @@ const Login = () => {
       localStorage.setItem("token", loginSlice.data.token);
       localStorage.setItem("role", decoded.role);
       dispatch(resetReducer());
-      if (decoded.role === "Admin") {
+      if (decoded.role === "admin" || decoded.role === "Admin" ) {
         navigate("/adminPoll");
-      } else if (decoded.role === "Guest") {
+        toast('Welcome to Admin Poll');
+      } else if (decoded.role === "Guest" || decoded.role === "guest") {
         navigate("/userPoll");
+       toast('Welcome to UserPoll');
       }
-      console.log('sucessfully loaded');
     }
     else {
-      console.log(loginSlice );
+      toast('Please Enter a valid data');
     }
   }, [loginSlice.isSuccess])
 
@@ -46,9 +46,7 @@ const Login = () => {
     onSubmit: (values) => {
       try {
         dispatch(login(values))
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
     },
     validationSchema: schema,
   });
