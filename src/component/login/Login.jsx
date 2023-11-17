@@ -32,9 +32,7 @@ const Login = () => {
        toast('Welcome to UserPoll');
       }
     }
-    else {
-      toast('Please Enter a valid data');
-    }
+
   }, [loginSlice.isSuccess])
 
 
@@ -45,8 +43,10 @@ const Login = () => {
     },
     onSubmit: (values) => {
       try {
+        console.log();
         dispatch(login(values))
-      } catch (error) {}
+      } catch (error) {
+      }
     },
     validationSchema: schema,
   });
@@ -70,6 +70,12 @@ const Login = () => {
                       value={formikData.values.username}
                       onChange={formikData.handleChange}
                       className='user-name-input mt-2' />
+                       {
+                    formikData.errors.username &&
+                    <p style={{ color: 'red' }}>
+                      {formikData.errors.userpassword}
+                    </p>
+                  }
                   </div>
 
                   <div className="user-password-feild mt-5">
@@ -79,6 +85,12 @@ const Login = () => {
                       value={formikData.values.userpassword}
                       onChange={formikData.handleChange}
                       className='user-password-input mt-2' />
+                       {
+                    formikData.errors.userpassword &&
+                    <p style={{ color: 'red' }}>
+                      {formikData.errors.userpassword}
+                    </p>
+                  }
                   </div>
 
                   <div className="button-parent mt-5 d-flex justify-content-around">
