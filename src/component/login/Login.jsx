@@ -4,37 +4,31 @@ import './Login.css'
 import { Link, useNavigate } from 'react-router-dom'
 import { useFormik } from 'formik';
 import { schema } from '../../utilities/utilities';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { login, resetReducer } from '../../Redux/slice/login';
-import {useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { jwtDecode } from 'jwt-decode';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify';
 
 const Login = () => {
-
   const navigate = useNavigate()
   const loginSlice = useSelector((state) => state.loginSlice);
-  const status = useSelector((state) => state.loginSlice.isLoading);
-  const error = useSelector((state) => state.loginSlice.isError);
-
-
   useEffect(() => {
     if (loginSlice.isSuccess && loginSlice.data.token) {
       const decoded = jwtDecode(loginSlice.data.token);
       localStorage.setItem("token", loginSlice.data.token);
       localStorage.setItem("role", decoded.role);
       dispatch(resetReducer());
-      if (decoded.role === "admin" || decoded.role === "Admin" ) {
+      if (decoded.role === "admin" || decoded.role === "Admin") {
         navigate("/adminPoll");
-        toast('Welcome to Admin Poll');
       } else if (decoded.role === "Guest" || decoded.role === "guest") {
         navigate("/userPoll");
-       toast('Welcome to UserPoll');
       }
     }
-
+    else if (loginSlice.data.error === 1) {
+      toast.error("user does not exist!");
+    }
   }, [loginSlice.isSuccess])
-
 
   const formikData = useFormik({
     initialValues: {
@@ -43,10 +37,11 @@ const Login = () => {
     },
     onSubmit: (values) => {
       try {
-        console.log();
-        dispatch(login(values))
-      } catch (error) {
-      }
+        if (!loginSlice.data.token) {
+          dispatch(resetReducer());
+        }
+        dispatch(login(values));
+      } catch (error) { }
     },
     validationSchema: schema,
   });
@@ -70,12 +65,8 @@ const Login = () => {
                       value={formikData.values.username}
                       onChange={formikData.handleChange}
                       className='user-name-input mt-2' />
-                       {
-                    formikData.errors.username &&
-                    <p style={{ color: 'red' }}>
-                      {formikData.errors.userpassword}
-                    </p>
-                  }
+                    {formikData.errors.username && formikData.touched.username &&
+                      <p className="text-danger">{formikData.errors.username}</p>}
                   </div>
 
                   <div className="user-password-feild mt-5">
@@ -85,15 +76,15 @@ const Login = () => {
                       value={formikData.values.userpassword}
                       onChange={formikData.handleChange}
                       className='user-password-input mt-2' />
-                       {
-                    formikData.errors.userpassword &&
-                    <p style={{ color: 'red' }}>
-                      {formikData.errors.userpassword}
-                    </p>
-                  }
+
+                    {formikData.errors.userpassword
+                      && formikData.touched.userpassword &&
+                      <p className="text-danger">{formikData.errors.userpassword}
+                      </p>}
+
                   </div>
 
-                  <div className="button-parent mt-5 d-flex justify-content-around">
+                  <div className="button-parent mt-5 d-flex justify-content-around p-3">
                     <button type="submit" className="login-btn btn btn-success">Log In</button>
                     <Link to={'/signup'} className="singup-btn btn btn-success">Sign Up</Link>
                   </div>
