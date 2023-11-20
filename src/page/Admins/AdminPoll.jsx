@@ -3,11 +3,16 @@ import { useSelector } from 'react-redux'
 import { dispatch } from '../../Redux/store/store'
 import { pollManage } from '../../Redux/slice/AdminPoll'
 import './Admin.css'
+import Option from '../../component/option/Option'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AdminPoll = () => {
   const [showInput, setShowInput] = useState(false)
-
+  const [optionLength, setOptionLength] = useState(1)
   const pollList = useSelector((state) => state.pollSlice.data.data)
+
+
   useEffect(() => {
     dispatch(pollManage())
   }, [])
@@ -15,10 +20,20 @@ const AdminPoll = () => {
     return <h3> <center> Loading.... </center> </h3>
   }
 
+  const increseLength = () => {
+    if (optionLength < 4) {
+      setOptionLength(optionLength + 1)
+    }
+    else {
+      toast.error('only four options are allowed')
+    }
+  }
+
   return (
     <>
-      <center> <h1> welcome to Admin Page</h1></center>
-      <div className='mt-4 d-flex justify-content-center align-item-center'
+      <ToastContainer />
+      <center> <h2> welcome to Admin Page</h2></center>
+      <div className='mt-2 d-flex justify-content-center align-item-center mt-3'
         style={{ fontSize: '22px', fontWeight: 'bold', cursor: 'pointer' }}
         onClick={() => setShowInput(true)}>
         AddPoll +
@@ -42,19 +57,19 @@ const AdminPoll = () => {
                     </div>
                     <div className="card-body">
                       {dataList.options.map((option) => (
-                        <div className="form-check" key={option.option}>
+                        <div className="form-check mt-2 p-2" key={option.option}
+                          style={{ border: '1px solid grey', borderRadius: '10px' }}>
 
-                            <div className="d-flex justify-content-between">
-                            <div className='text-sm text-md-lg text-lg-xl mt-3'
+                          <div className="d-flex justify-content-between">
+                            <div className='text-sm text-md-lg text-lg-xl '
                               style={{ wordWrap: 'break-word' }}>
                               {option.option}
                             </div>
+                            <div className="icons d-flex">
+                              <div className="vote-div mx-5">vote : 0</div>
+                              <i className="fa-solid fa-trash"></i>
                             </div>
-                          {/* <label
-                            className="form-check-label mx-2"
-                            htmlhtmlFor="exampleRadios2"> */}
-                            
-                          {/* </label> */}
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -72,19 +87,19 @@ const AdminPoll = () => {
                 <label htmlFor="exampleInputEmail1">Title</label>
                 <input type="email" className="form-control mt-2" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter title" />
               </div>
-              <div className="form-group mt-4">
-                <label htmlFor="exampleInputPassword1">Option</label>
-                <input type="text" className="form-control mt-2" 
-                placeholder="option" />
-              </div>
+              {
+                Array.from({ length: optionLength }).map((_, index) => (
+                  <Option key={index} />
+                ))
+              }
               <div className="add-option mt-4">
-                <h2>+</h2>
+                <h2 onClick={() => increseLength()}>+</h2>
               </div>
               <div className="d-flex justify-content-between mt-4">
-              <button className="btn btn-primary">Submit</button>
-              <button className="btn btn-primary" onClick={()=>setShowInput(false)}>
-                cencel
-              </button>
+                <button className="btn btn-primary">Submit</button>
+                <button className="btn btn-primary" onClick={() => setShowInput(false)}>
+                  cencel
+                </button>
               </div>
             </form>
           </div>
