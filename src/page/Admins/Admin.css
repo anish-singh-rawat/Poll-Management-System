@@ -1,0 +1,27 @@
+.card-header{
+    display: flex;
+    justify-content: space-between;
+}
+.fa-regular, .fa-solid, .add-option{
+    cursor: pointer;
+}
+.input-form{
+    border: 1px solid rgb(166, 166, 166);
+    padding: 10px;
+    border-radius: 15px;
+    background-color: rgb(220, 220, 220);
+    color: black;
+}
+    @media (max-width: 475px) {
+        .card-title{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    .card-header{
+        display: block;
+    }
+    .shift-right{
+        margin-top: 20px;
+    }
+}

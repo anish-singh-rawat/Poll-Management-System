@@ -26,8 +26,6 @@ const SignUp = () => {
     }
   },[signupSlice.isSuccess])
 
-
-
   const formikData = useFormik({
     initialValues: {
       username: '',
