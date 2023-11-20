@@ -20,13 +20,19 @@ const signupSlice = createSlice({
       state.isLoading = false;
       state.isError = false;
       state.isSuccess = true;
-      state.data = action.payload;
+      state.data = { ...action.payload };
     },
     hasError(state, action) {
       state.isError = true;
       state.isLoading = false;
       state.isSuccess = false;
-      state.data = action.payload;
+      state.data = { ...action.payload };
+    },
+    resetReducer(state) {
+      state.isError = false;
+      state.isLoading = false;
+      state.isSuccess = false;
+      state.data = {};
     },
   },
 });
@@ -39,12 +45,12 @@ export function signup(payload) {
     try {
       const response = await
         axios.post(`https://etechpolltesting.onrender.com/add_user?username=${payload.username}&password=${payload.userpassword}&role=${payload.role}`);
-      dispatch(signupSlice.actions.loginSuccess(response.data.data));
+      dispatch(signupSlice.actions.loginSuccess(response.data));
     } catch (e) {
       dispatch(signupSlice.actions.hasError(e));
     }
   }
 }
 
-export const { startLoading, hasError, loginSuccess } = signupSlice.actions;
+export const { startLoading, hasError, loginSuccess, resetReducer } = signupSlice.actions;
 export default signupSlice.reducer;
