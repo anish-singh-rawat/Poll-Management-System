@@ -37,17 +37,37 @@ const listDataSlice = createSlice({
   },
 });
 
-export function listData(payload) {
+export  function listData(payload, newOptions) {
   return async () => {
     dispatch(listDataSlice.actions.startLoading());
+
     try {
-        // const response = await axios.post(`https://etechpolltesting.onrender.com/add_poll?title=${payload.title}&options=opt1____opt2____opt3____opt4`);
-      // dispatch(listDataSlice.actions.loginSuccess(response.data));
+        if (newOptions.length === 1) {
+          const response =  axios.post(`https://etechpolltesting.onrender.com/add_poll?title=${payload.title}&options=${newOptions[0].option}`);
+          dispatch(listDataSlice.actions.loginSuccess(response.data));
+        }
+        
+        else if (newOptions.length === 2) {
+          const response =  axios.post(`https://etechpolltesting.onrender.com/add_poll?title=${payload.title}&options=${newOptions[0].option}____${newOptions[1].option}`);
+          dispatch(listDataSlice.actions.loginSuccess(response.data));
+        }
+
+        else if (newOptions.length === 3) {
+          const response =  axios.post(`https://etechpolltesting.onrender.com/add_poll?title=${payload.title}&options=${newOptions[0].option}____${newOptions[1].option}____${newOptions[2].option}`);
+          dispatch(listDataSlice.actions.loginSuccess(response.data));
+        }
+
+        else if (newOptions.length === 4) {
+          const response =  axios.post(`https://etechpolltesting.onrender.com/add_poll?title=${payload.title}&options=${newOptions[0].option}____${newOptions[1].option}____${newOptions[2].option}____${newOptions[3].option}`);
+          dispatch(listDataSlice.actions.loginSuccess(response.data));
+        }
+      
     } catch (e) {
       dispatch(listDataSlice.actions.hasError(e));
     }
   }
 }
+
 
 export const { startLoading, hasError, loginSuccess, resetReducer } 
 = listDataSlice.actions;

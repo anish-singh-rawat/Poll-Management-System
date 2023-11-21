@@ -38,7 +38,7 @@ const UsersPoll = () => {
                 </div>
                 <div className="card-body">
                   {dataList.options.map((option, index) => (
-                    <div className="form-check" key={option.option}>
+                    <div className="form-check" key={index}>
 
                       <input
                         className="form-check-input"

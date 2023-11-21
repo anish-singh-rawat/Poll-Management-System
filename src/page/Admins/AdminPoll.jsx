@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux'
 import { dispatch } from '../../Redux/store/store'
 import { pollManage } from '../../Redux/slice/AdminPoll'
 import './Admin.css'
-import Option from '../../component/option/Option'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useFormik } from 'formik'
@@ -12,9 +11,11 @@ import { useNavigate } from 'react-router-dom'
 
 const AdminPoll = () => {
   const [showInput, setShowInput] = useState(false)
-  const [optionLength, setOptionLength] = useState(1)
+
+
   const pollList = useSelector((state) => state.pollSlice.data.data)
   const navigate = useNavigate()
+  const [newOptions, setNewOptions] = useState([{ option: '' }]); 
   useEffect(() => {
     dispatch(pollManage())
   }, [])
@@ -22,30 +23,45 @@ const AdminPoll = () => {
   const formikData = useFormik({
     initialValues: {
       title: '',
-      option: '',
     },
     onSubmit: (values) => {
       try {
-        dispatch(listData(values));
-      } catch (error) {
+        if (values.title.trim() !== '') {
+          dispatch(listData(values, newOptions));
+          setShowInput(false)
+          toast.success("data add successfully")
+        }
+        else {
+          dispatch(resetReducer())
+          toast.warning('Please enter a title or Opions')
+        }
+      }
+      catch (error) {
       }
     },
   });
 
   const increseLength = () => {
-    if (optionLength < 4) {
-      setOptionLength(optionLength + 1)
+    if (newOptions.length < 4) {
+      setNewOptions([...newOptions, { option: '' }])
     }
     else {
       toast.error('only four options are allowed')
     }
   }
 
-  const logOut=()=>{
+  const handleChange = (event, index) => {
+    const { name, value } = event.target
+    const onchangeValue = [...newOptions]
+    onchangeValue[index][name] = value
+    setNewOptions(onchangeValue)
+
+  }
+
+  const logOut = () => {
     navigate('/login')
     dispatch(resetReducer())
   }
-
 
   if (!pollList) {
     return <h3> <center> Loading.... </center> </h3>
@@ -54,9 +70,9 @@ const AdminPoll = () => {
   return (
     <>
       <ToastContainer />
-      
+
       <center> <h2> welcome to Admin Page</h2>
-      <div className="float-right mx-5" onClick={()=> logOut()}>Logout</div>
+        <div className="float-right mx-5" onClick={() => logOut()}>Logout</div>
       </center>
       <div className='mt-2 d-flex justify-content-center align-item-center mt-3'
         style={{ fontSize: '22px', fontWeight: 'bold', cursor: 'pointer' }}
@@ -81,8 +97,8 @@ const AdminPoll = () => {
                       </div>
                     </div>
                     <div className="card-body">
-                      {dataList.options.map((option) => (
-                        <div className="form-check mt-2 p-2" key={option.option}
+                      {dataList.options.map((option, ind) => (
+                        <div className="form-check mt-2 p-2" key={ind}
                           style={{ border: '1px solid grey', borderRadius: '10px' }}>
 
                           <div className="d-flex justify-content-between">
@@ -118,11 +134,24 @@ const AdminPoll = () => {
                   <p className="text-danger">{formikData.errors.title}</p>}
 
               </div>
+
               {
-                Array.from({ length: optionLength }).map((_, index) => (
-                  <Option index={index} key={index} />
+                newOptions.map((items, index) => (
+                  <div className="form-group mt-3" key={index}>
+                    <label>Option {index + 1}</label>
+                    <input
+                      type="text"
+                      className="form-control mt-2"
+                      name={`option`}
+                      value={items.option}
+                      placeholder={`Option ${index + 1}`}
+                      onChange={(event) => handleChange(event, index)}
+                    />
+                  </div>
                 ))
               }
+
+              {/*  */}
               <div className="add-option mt-4">
                 <h2 onClick={() => increseLength()}>+</h2>
               </div>
