@@ -67,9 +67,8 @@ const SignUp = () => {
                     <br />
                     <input type="text" name='username'
                       onChange={formikData.handleChange}
-                      value={formikData.values.username} className='user-name-input mt-2' />
-                    {formikData.errors.username && formikData.touched.username &&
-                      <p className="text-danger">{formikData.errors.username}</p>}
+                      value={formikData.values.username}
+                       className='user-name-input mt-2' />
 
                   </div>
 

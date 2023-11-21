@@ -6,19 +6,31 @@ import './Admin.css'
 import Option from '../../component/option/Option'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useFormik } from 'formik'
+import { listData, resetReducer } from '../../Redux/slice/listData'
+import { useNavigate } from 'react-router-dom'
 
 const AdminPoll = () => {
   const [showInput, setShowInput] = useState(false)
   const [optionLength, setOptionLength] = useState(1)
   const pollList = useSelector((state) => state.pollSlice.data.data)
-
-
+  const navigate = useNavigate()
   useEffect(() => {
     dispatch(pollManage())
   }, [])
-  if (!pollList) {
-    return <h3> <center> Loading.... </center> </h3>
-  }
+
+  const formikData = useFormik({
+    initialValues: {
+      title: '',
+      option: '',
+    },
+    onSubmit: (values) => {
+      try {
+        dispatch(listData(values));
+      } catch (error) {
+      }
+    },
+  });
 
   const increseLength = () => {
     if (optionLength < 4) {
@@ -29,10 +41,23 @@ const AdminPoll = () => {
     }
   }
 
+  const logOut=()=>{
+    navigate('/login')
+    dispatch(resetReducer())
+  }
+
+
+  if (!pollList) {
+    return <h3> <center> Loading.... </center> </h3>
+  }
+
   return (
     <>
       <ToastContainer />
-      <center> <h2> welcome to Admin Page</h2></center>
+      
+      <center> <h2> welcome to Admin Page</h2>
+      <div className="float-right mx-5" onClick={()=> logOut()}>Logout</div>
+      </center>
       <div className='mt-2 d-flex justify-content-center align-item-center mt-3'
         style={{ fontSize: '22px', fontWeight: 'bold', cursor: 'pointer' }}
         onClick={() => setShowInput(true)}>
@@ -82,21 +107,29 @@ const AdminPoll = () => {
           :
 
           <div>
-            <form className='input-form mt-3'>
+            <form className='input-form mt-3' onSubmit={formikData.handleSubmit}>
               <div className="form-group">
                 <label htmlFor="exampleInputEmail1">Title</label>
-                <input type="email" className="form-control mt-2" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter title" />
+                <input type="text" className="form-control mt-2"
+                  value={formikData.values.title} name='title'
+                  onChange={formikData.handleChange} placeholder="Enter message title" />
+
+                {formikData.errors.title &&
+                  <p className="text-danger">{formikData.errors.title}</p>}
+
               </div>
               {
                 Array.from({ length: optionLength }).map((_, index) => (
-                  <Option key={index} />
+                  <Option index={index} key={index} />
                 ))
               }
               <div className="add-option mt-4">
                 <h2 onClick={() => increseLength()}>+</h2>
               </div>
               <div className="d-flex justify-content-between mt-4">
-                <button className="btn btn-primary">Submit</button>
+                <button type='submit' className="btn btn-primary">
+                  Submit
+                </button>
                 <button className="btn btn-primary" onClick={() => setShowInput(false)}>
                   cencel
                 </button>
@@ -110,3 +143,6 @@ const AdminPoll = () => {
 }
 
 export default AdminPoll
+
+
+

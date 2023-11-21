@@ -1,15 +1,23 @@
 import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { dispatch } from '../../Redux/store/store'
-import { pollManage } from '../../Redux/slice/userPoll'
+import { pollManage } from '../../Redux/slice/AdminPoll'
+import { useNavigate } from 'react-router-dom'
+import { resetReducer } from '../../Redux/slice/login'
 
 
 const UsersPoll = () => {
   const pollList = useSelector((state) => state.pollSlice.data.data)
+  const navigate = useNavigate()
 
   useEffect(() => {
     dispatch(pollManage())
   }, [])
+
+  const logOut=()=>{
+    navigate('/login')
+    dispatch(resetReducer())
+  }
 
   if (!pollList) {
     return <h3> <center> Loading.... </center> </h3>
@@ -17,7 +25,9 @@ const UsersPoll = () => {
 
   return (
     <>
-      <center> <h1> welcome to User Poll</h1></center>
+      <center> <h1> welcome to User Poll</h1>
+      <div className="float-right mx-5" onClick={()=> logOut()}>Logout</div>
+      </center>
       <div className='container'>
         <div className="row">
           <div className="col">
@@ -56,3 +66,9 @@ const UsersPoll = () => {
 }
 
 export default UsersPoll
+
+
+
+
+
+
