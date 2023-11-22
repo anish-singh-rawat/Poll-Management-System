@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { dispatch } from "../store/store";
-import axios from "axios";
+import Instance from "../../utilities/axios";
 
 const initialState = {
     isLoading: false,
@@ -43,7 +43,7 @@ export function deleteOption(optionInd, optionText) {
         dispatch(deleteOptionSlice.actions.startLoading());
         try {
             console.log(optionInd, optionText);
-            const response = await axios.delete(`https://etechpolltesting.onrender.com/delete_poll_option?id=${optionInd}&option_text=${optionText}`);
+            const response = await Instance.delete(`delete_poll_option?id=${optionInd}&option_text=${optionText}`);
             dispatch(deleteOptionSlice.actions.loginSuccess(response.data));
 
         } catch (e) {

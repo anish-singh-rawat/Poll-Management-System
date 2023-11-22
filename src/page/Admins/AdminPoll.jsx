@@ -10,9 +10,15 @@ import { listData, resetReducer } from '../../Redux/slice/listData'
 import { useNavigate } from 'react-router-dom'
 import { DeleteTitle } from '../../Redux/slice/DeleteTitle'
 import { deleteOption } from '../../Redux/slice/deleteOption'
+import {EditTitle} from '../../Redux/slice/EditTitle'
 
 const AdminPoll = () => {
   const [showInput, setShowInput] = useState(false)
+  const [showEditInput, setShowEditInput] = useState(false)
+  const [newEditData, setNewEditData] = useState('')
+  const [editId, setEditId] = useState('')
+
+
   const pollList = useSelector((state) => state.pollSlice.data.data)
   const [newOptions, setNewOptions] = useState([{ option: '' }]);
   const navigate = useNavigate()
@@ -42,6 +48,27 @@ const AdminPoll = () => {
     },
   });
 
+  const formikEditData = useFormik({
+    initialValues: {
+      Edittitle: '',
+    },
+    onSubmit: () => {
+      try {
+        if (newEditData.trim() !== '') {
+
+          dispatch(EditTitle(editId, newEditData))
+          toast.success("data add successfully")
+          setShowEditInput(false)
+        }
+        else {
+          toast.warning(`Title can't be empty`)
+        }
+      }
+      catch (error) { console.log(error , 'error');}
+    },
+  });
+
+
   const increseLength = () => {
     if (newOptions.length < 4) {
       setNewOptions([...newOptions, { option: '' }])
@@ -64,18 +91,26 @@ const AdminPoll = () => {
     dispatch(resetReducer())
   }
 
-  const deleteTitleData = (titleID)=>{
+  const deleteTitleData = (titleID) => {
     dispatch(DeleteTitle(titleID))
   }
 
-  const deleteOptionData = (optionInd, optionText)=>{
+  const deleteOptionData = (optionInd, optionText) => {
     dispatch(deleteOption(optionInd, optionText.option))
-    // console.log(optionInd, optionText.option);
   }
+
+  const editTitle = (titleId, titleData) => {
+    setShowEditInput(true)
+    setEditId(titleId)
+    setNewEditData(titleData)
+  }
+
+
 
   if (!pollList) {
     return <h3> <center> Loading.... </center> </h3>
   }
+
 
   return (
     <>
@@ -91,44 +126,52 @@ const AdminPoll = () => {
       </div>
 
       {
-        !showInput ?
+        !showInput && !showEditInput ?
           <div className='container mt-2' style={{ wordWrap: 'break-word' }}>
             <div className="row">
               <div className="col">
                 {pollList.length > 0 && pollList.slice().reverse().map((dataList) => (
-                  <div className="card mt-3" key={dataList._id}>
-                    <div className="card-header ">
-                      <h5 className="card-title" style={{ wordWrap: 'break-word' }}>
-                        {dataList.title}
-                      </h5>
-                      <div className="shift-right d-flex justify-content-around">
-                        <i className="fa-regular fa-pen-to-square mx-5"></i>
-                        <i className="fa-solid fa-trash" 
-                        onClick={()=>deleteTitleData(dataList._id)}
-                        >
-                        </i>
-                      </div>
-                    </div>
-                    <div className="card-body">
-                      {dataList.options.map((option, ind) => (
-                        <div className="form-check mt-2 p-2" key={ind}
-                          style={{ border: '1px solid grey', borderRadius: '10px' }}>
+                  <div key={dataList._id}>
+                    {
+                      dataList.options.length > 0 &&
+                      <div className="card mt-3">
+                        <div className="card-header ">
+                          <h5 className="card-title" style={{ wordWrap: 'break-word' }}>   {dataList.title}
+                          </h5>
+                          <div className="shift-right d-flex justify-content-around">
 
-                          <div className="d-flex justify-content-between">
-                            <div className='text-sm text-md-lg text-lg-xl '
-                              style={{ wordWrap: 'break-word' }}>
-                              {option.option}
-                            </div>
-                            <div className="icons d-flex">
-                              <div className="vote-div mx-5">vote : 0</div>
-                              <i className="fa-solid fa-trash"
-                              onClick={()=>deleteOptionData(dataList._id, option)} >
-                              </i>
-                            </div>
+                            <i className="fa-regular fa-pen-to-square mx-5"
+                              onClick={() => editTitle(dataList._id, dataList.title)}>
+                            </i>
+
+                            <i className="fa-solid fa-trash"
+                              onClick={() => deleteTitleData(dataList._id)}>
+                            </i>
+
                           </div>
                         </div>
-                      ))}
-                    </div>
+                        <div className="card-body">
+                          {dataList.options.map((option, ind) => (
+                            <div className="form-check mt-2 p-2" key={ind}
+                              style={{ border: '1px solid grey', borderRadius: '10px' }}>
+
+                              <div className="d-flex justify-content-between">
+                                <div className='text-sm text-md-lg text-lg-xl '
+                                  style={{ wordWrap: 'break-word' }}>
+                                  {option.option}
+                                </div>
+                                <div className="icons d-flex">
+                                  <div className="vote-div mx-5">vote : 0</div>
+                                  <i className="fa-solid fa-trash"
+                                    onClick={() => deleteOptionData(dataList._id, option)} >
+                                  </i>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    }
                   </div>
                 ))}
               </div>
@@ -136,49 +179,80 @@ const AdminPoll = () => {
           </div>
 
           :
+          showEditInput ?
+            <div>
+              <form className='input-form mt-3' onSubmit={formikEditData.handleSubmit}>
+                <div className="form-group">
+                  <label htmlFor="exampleInputEmail1">Title</label>
 
-          <div>
-            <form className='input-form mt-3' onSubmit={formikData.handleSubmit}>
-              <div className="form-group">
-                <label htmlFor="exampleInputEmail1">Title</label>
-                <input type="text" className="form-control mt-2"
-                  value={formikData.values.title} name='title'
-                  onChange={formikData.handleChange} placeholder="Enter message title" />
+                  <input type="text" className="form-control mt-2"
+                    value={newEditData}
+                     name='Edittitle'
+                    // onChange={formikEditData.handleChange} 
+                    onChange={(e)=> setNewEditData(e.target.value)}
+                    placeholder="Enter message title" />
+                  {formikEditData.errors.title &&
+                  <p className="text-danger">{formikEditData.errors.title}</p>}
+                </div>
 
-                {formikData.errors.title &&
-                  <p className="text-danger">{formikData.errors.title}</p>}
+                <div className="d-flex justify-content-between mt-4">
 
-              </div>
+                  <button type='submit' className="btn btn-primary">
+                    Submit
+                  </button>
 
-              {
-                newOptions.map((items, index) => (
-                  <div className="form-group mt-3" key={index}>
-                    <label>Option {index + 1}</label>
-                    <input
-                      type="text"
-                      className="form-control mt-2"
-                      name={`option`}
-                      value={items.option}
-                      placeholder={`Option ${index + 1}`}
-                      onChange={(event) => handleChange(event, index)}
-                    />
-                  </div>
-                ))
-              }
+                  <button type='reset' className="btn btn-primary"
+                    onClick={() => setShowEditInput(false)}>
+                    cencel
+                  </button>
 
-              <div className="add-option mt-4">
-                <h2 onClick={() => increseLength()}>+</h2>
-              </div>
-              <div className="d-flex justify-content-between mt-4">
-                <button type='submit' className="btn btn-primary">
-                  Submit
-                </button>
-                <button className="btn btn-primary" onClick={() => setShowInput(false)}>
-                  cencel
-                </button>
-              </div>
-            </form>
-          </div>
+                </div>
+              </form>
+            </div>
+
+            :
+            <div>
+              <form className='input-form mt-3' onSubmit={formikData.handleSubmit}>
+                <div className="form-group">
+                  <label htmlFor="exampleInputEmail1">Title</label>
+                  <input type="text" className="form-control mt-2"
+                    value={formikData.values.title} name='title'
+                    onChange={formikData.handleChange} placeholder="Enter message title" />
+
+                  {formikData.errors.title &&
+                    <p className="text-danger">{formikData.errors.title}</p>}
+
+                </div>
+
+                {
+                  newOptions.map((items, index) => (
+                    <div className="form-group mt-3" key={index}>
+                      <label>Option {index + 1}</label>
+                      <input
+                        type="text"
+                        className="form-control mt-2"
+                        name={`option`}
+                        value={items.option}
+                        placeholder={`Option ${index + 1}`}
+                        onChange={(event) => handleChange(event, index)}
+                      />
+                    </div>
+                  ))
+                }
+
+                <div className="add-option mt-4">
+                  <h2 onClick={() => increseLength()}>+</h2>
+                </div>
+                <div className="d-flex justify-content-between mt-4">
+                  <button type='submit' className="btn btn-primary">
+                    Submit
+                  </button>
+                  <button className="btn btn-primary" onClick={() => setShowInput(false)}>
+                    cencel
+                  </button>
+                </div>
+              </form>
+            </div>
       }
 
     </>

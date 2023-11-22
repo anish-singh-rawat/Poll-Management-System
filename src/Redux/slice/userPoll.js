@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { dispatch } from "../store/store";
-import axios from "axios";
+import Instance from "../../utilities/axios";
 
 const initialState = {
     isLoading: false,
@@ -41,8 +41,7 @@ export function pollManage() {
     return async () => {
         dispatch(pollSlice.actions.startLoading());
         try {
-            const response = await
-                axios.post("https://etechpolltesting.onrender.com/list_polls");
+            const response = await Instance.post("list_polls");
             dispatch(pollSlice.actions.getSuccess(response.data));
         } catch (error) {
             dispatch(pollSlice.actions.hasError(error));

@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { dispatch } from "../store/store";
-import axios from "axios";
+import Instance from "../../utilities/axios";
 
 const initialState = {
   isLoading: false,
@@ -43,22 +43,22 @@ export  function listData(payload, newOptions) {
 
     try {
         if (newOptions.length === 1) {
-          const response =  axios.post(`https://etechpolltesting.onrender.com/add_poll?title=${payload.title}&options=${newOptions[0].option}`);
+          const response =  Instance.post(`add_poll?title=${payload.title}&options=${newOptions[0].option}`);
           dispatch(listDataSlice.actions.loginSuccess(response.data));
         }
         
         else if (newOptions.length === 2) {
-          const response =  axios.post(`https://etechpolltesting.onrender.com/add_poll?title=${payload.title}&options=${newOptions[0].option}____${newOptions[1].option}`);
+          const response =  Instance.post(`add_poll?title=${payload.title}&options=${newOptions[0].option}____${newOptions[1].option}`);
           dispatch(listDataSlice.actions.loginSuccess(response.data));
         }
 
         else if (newOptions.length === 3) {
-          const response =  axios.post(`https://etechpolltesting.onrender.com/add_poll?title=${payload.title}&options=${newOptions[0].option}____${newOptions[1].option}____${newOptions[2].option}`);
+          const response =  Instance.post(`add_poll?title=${payload.title}&options=${newOptions[0].option}____${newOptions[1].option}____${newOptions[2].option}`);
           dispatch(listDataSlice.actions.loginSuccess(response.data));
         }
 
         else if (newOptions.length === 4) {
-          const response =  axios.post(`https://etechpolltesting.onrender.com/add_poll?title=${payload.title}&options=${newOptions[0].option}____${newOptions[1].option}____${newOptions[2].option}____${newOptions[3].option}`);
+          const response =  Instance.post(`add_poll?title=${payload.title}&options=${newOptions[0].option}____${newOptions[1].option}____${newOptions[2].option}____${newOptions[3].option}`);
           dispatch(listDataSlice.actions.loginSuccess(response.data));
         }
       

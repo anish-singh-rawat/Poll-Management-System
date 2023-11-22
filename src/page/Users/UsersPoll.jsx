@@ -14,7 +14,7 @@ const UsersPoll = () => {
     dispatch(pollManage())
   }, [])
 
-  const logOut=()=>{
+  const logOut = () => {
     navigate('/login')
     dispatch(resetReducer())
   }
@@ -26,36 +26,41 @@ const UsersPoll = () => {
   return (
     <>
       <center> <h1> welcome to User Poll</h1>
-      <div className="float-right mx-5" onClick={()=> logOut()}>Logout</div>
+        <div className="float-right mx-5" onClick={() => logOut()}>Logout</div>
       </center>
       <div className='container'>
         <div className="row">
           <div className="col">
-            {pollList.length > 0 && pollList.map((dataList) => (
+            {pollList.length > 0 && pollList.slice().reverse().map((dataList) => (
               <div className="card my-3" key={dataList._id}>
-                <div className="card-header">
-                  <h5 className="card-title">{dataList.title}</h5>
-                </div>
-                <div className="card-body">
-                  {dataList.options.map((option, index) => (
-                    <div className="form-check" key={index}>
-
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        name="exampleRadios" id="exampleRadios2"
-                        value={option.option} />
-
-                      <label
-                        className="form-check-label mx-2"
-                        htmlFor="exampleRadios2">
-                        <div className='text-sm text-md-lg text-lg-xl'>
-                          {option.option}    
-                        </div>
-                      </label>
+                {
+                  dataList.options.length > 0 &&
+                  <div>
+                    <div className="card-header">
+                      <h5 className="card-title">{dataList.title}</h5>
                     </div>
-                  ))}
-                </div>
+                    <div className="card-body">
+                      {dataList.options.map((option, index) => (
+                        <div className="form-check" key={index}>
+
+                          <input
+                            className="form-check-input"
+                            type="radio"
+                            name="exampleRadios" id="exampleRadios2"
+                            value={option.option} />
+
+                          <label
+                            className="form-check-label mx-2"
+                            htmlFor="exampleRadios2">
+                            <div className='text-sm text-md-lg text-lg-xl'>
+                              {option.option}
+                            </div>
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                 }
               </div>
             ))}
           </div>
