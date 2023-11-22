@@ -42,7 +42,7 @@ export function DeleteTitle(payload) {
   return async () => {
     dispatch(deleteTitleSlice.actions.startLoading());
     try {
-        const response = await axios.post(`https://etechpolltesting.onrender.com/delete_poll?id=${payload.actionId}`);
+        const response = await axios.delete(`https://etechpolltesting.onrender.com/delete_poll?id=${payload}`);
       dispatch(deleteTitleSlice.actions.loginSuccess(response.data));
     } catch (e) {
       dispatch(deleteTitleSlice.actions.hasError(e));

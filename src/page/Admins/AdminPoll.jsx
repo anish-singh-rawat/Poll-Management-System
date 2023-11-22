@@ -8,14 +8,15 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useFormik } from 'formik'
 import { listData, resetReducer } from '../../Redux/slice/listData'
 import { useNavigate } from 'react-router-dom'
+import { DeleteTitle } from '../../Redux/slice/DeleteTitle'
+import { deleteOption } from '../../Redux/slice/deleteOption'
 
 const AdminPoll = () => {
   const [showInput, setShowInput] = useState(false)
-
-
   const pollList = useSelector((state) => state.pollSlice.data.data)
+  const [newOptions, setNewOptions] = useState([{ option: '' }]);
   const navigate = useNavigate()
-  const [newOptions, setNewOptions] = useState([{ option: '' }]); 
+
   useEffect(() => {
     dispatch(pollManage())
   }, [])
@@ -63,6 +64,15 @@ const AdminPoll = () => {
     dispatch(resetReducer())
   }
 
+  const deleteTitleData = (titleID)=>{
+    dispatch(DeleteTitle(titleID))
+  }
+
+  const deleteOptionData = (optionInd, optionText)=>{
+    dispatch(deleteOption(optionInd, optionText.option))
+    // console.log(optionInd, optionText.option);
+  }
+
   if (!pollList) {
     return <h3> <center> Loading.... </center> </h3>
   }
@@ -85,7 +95,7 @@ const AdminPoll = () => {
           <div className='container mt-2' style={{ wordWrap: 'break-word' }}>
             <div className="row">
               <div className="col">
-                {pollList.length > 0 && pollList.map((dataList) => (
+                {pollList.length > 0 && pollList.slice().reverse().map((dataList) => (
                   <div className="card mt-3" key={dataList._id}>
                     <div className="card-header ">
                       <h5 className="card-title" style={{ wordWrap: 'break-word' }}>
@@ -93,7 +103,10 @@ const AdminPoll = () => {
                       </h5>
                       <div className="shift-right d-flex justify-content-around">
                         <i className="fa-regular fa-pen-to-square mx-5"></i>
-                        <i className="fa-solid fa-trash"></i>
+                        <i className="fa-solid fa-trash" 
+                        onClick={()=>deleteTitleData(dataList._id)}
+                        >
+                        </i>
                       </div>
                     </div>
                     <div className="card-body">
@@ -108,7 +121,9 @@ const AdminPoll = () => {
                             </div>
                             <div className="icons d-flex">
                               <div className="vote-div mx-5">vote : 0</div>
-                              <i className="fa-solid fa-trash"></i>
+                              <i className="fa-solid fa-trash"
+                              onClick={()=>deleteOptionData(dataList._id, option)} >
+                              </i>
                             </div>
                           </div>
                         </div>
@@ -151,7 +166,6 @@ const AdminPoll = () => {
                 ))
               }
 
-              {/*  */}
               <div className="add-option mt-4">
                 <h2 onClick={() => increseLength()}>+</h2>
               </div>
