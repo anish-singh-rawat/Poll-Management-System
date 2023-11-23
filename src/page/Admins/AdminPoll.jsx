@@ -50,8 +50,6 @@ const AdminPoll = () => {
           <div className="col">
             {pollList.length > 0 && pollList.slice().reverse().map((dataList) => (
               <div key={dataList._id}>
-                {
-                  dataList.options.length > 0 &&
                   <div className="card mt-3">
                     <div className="card-header bg-success text-light ">
                       <h5 className="card-title " style={{ wordWrap: 'break-word' }}>   {dataList.title}
@@ -98,7 +96,6 @@ const AdminPoll = () => {
                       ))}
                     </div>
                   </div>
-                }
               </div>
             ))}
           </div>

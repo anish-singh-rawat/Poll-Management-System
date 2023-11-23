@@ -33,8 +33,6 @@ const UsersPoll = () => {
           <div className="col">
             {pollList.length > 0 && pollList.slice().reverse().map((dataList) => (
               <div className="card my-3" key={dataList._id}>
-                {
-                  dataList.options.length > 0 &&
                   <div>
                     <div className="card-header">
                       <h5 className="card-title">{dataList.title}</h5>
@@ -60,7 +58,6 @@ const UsersPoll = () => {
                       ))}
                     </div>
                   </div>
-                 }
               </div>
             ))}
           </div>
