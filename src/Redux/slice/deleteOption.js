@@ -42,7 +42,6 @@ export function deleteOption(optionInd, optionText) {
     return async () => {
         dispatch(deleteOptionSlice.actions.startLoading());
         try {
-            console.log(optionInd, optionText);
             const response = await Instance.delete(`delete_poll_option?id=${optionInd}&option_text=${optionText}`);
             dispatch(deleteOptionSlice.actions.loginSuccess(response.data));
 

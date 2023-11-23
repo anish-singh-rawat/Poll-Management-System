@@ -13,13 +13,22 @@
     color: black;
 }
 .float-right{
-    text-align: right;
     font-size: 20px;
     cursor: pointer;
     font-weight: bold;
-    color: rgb(201, 14, 14);
 }
-    @media (max-width: 475px) {
+@media (min-width: 600px) {
+    .float-right{
+        text-align: right;
+        font-size: 20px;
+        cursor: pointer;
+        font-weight: bold;
+        position: relative;
+        bottom: 42px;
+    }
+}
+
+@media (max-width: 475px) {
         .card-title{
             display: flex;
             justify-content: center;

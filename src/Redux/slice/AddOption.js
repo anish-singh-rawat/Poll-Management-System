@@ -9,7 +9,7 @@ const initialState = {
   data: {},
 };
 
-const editTitleSlice = createSlice({
+const AddOptionSlice = createSlice({
   name: "editTitle",
   initialState,
   reducers: {
@@ -38,21 +38,21 @@ const editTitleSlice = createSlice({
   },
 });
 
-export function EditTitle(titleId, titleData) {
+export function AddOption(OptionId, OptionData) {
   return async () => {
-    dispatch(editTitleSlice.actions.startLoading());
+    dispatch(AddOptionSlice.actions.startLoading());
     try {
-      const response = await Instance.delete(`update_poll_title?id=${titleId}&title=${titleData}`);
-      dispatch(editTitleSlice.actions.loginSuccess(response.data));
+      const response = await Instance.delete(`add_new_option?id=${OptionId}&option_text=${OptionData}`);
+      dispatch(AddOptionSlice.actions.loginSuccess(response.data));
       
     } catch (error) {
-      dispatch(editTitleSlice.actions.hasError(error));
+      dispatch(AddOptionSlice.actions.hasError(error));
     }
   }
 }
 
 export const { startLoading, hasError, loginSuccess, resetReducer }
-  = editTitleSlice.actions;
-export default editTitleSlice.reducer;
+  = AddOptionSlice.actions;
+export default AddOptionSlice.reducer;
 
 

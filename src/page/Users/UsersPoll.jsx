@@ -20,13 +20,13 @@ const UsersPoll = () => {
   }
 
   if (!pollList) {
-    return <h3> <center> Loading.... </center> </h3>
+    return <h3 className='text-warning'> <center> Loading.... </center> </h3>
   }
 
   return (
     <>
-      <center> <h1> welcome to User Poll</h1>
-        <div className="float-right mx-5" onClick={() => logOut()}>Logout</div>
+      <center> <h2 className='text-light'> welcome to User Poll</h2>
+        <div className="float-right text-danger mx-5" onClick={() => logOut()}>Logout</div>
       </center>
       <div className='container'>
         <div className="row">
