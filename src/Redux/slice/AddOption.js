@@ -10,7 +10,7 @@ const initialState = {
 };
 
 const AddOptionSlice = createSlice({
-  name: "editTitle",
+  name: "Addoption",
   initialState,
   reducers: {
     startLoading(state) {

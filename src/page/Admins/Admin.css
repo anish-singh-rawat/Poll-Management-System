@@ -17,6 +17,13 @@
     cursor: pointer;
     font-weight: bold;
 }
+.data-container{
+    height: 500px;
+    overflow-y: scroll;
+}
+.input-radio-btn{
+    border: 1px solid rgb(0, 0, 0);
+}
 @media (min-width: 600px) {
     .float-right{
         text-align: right;

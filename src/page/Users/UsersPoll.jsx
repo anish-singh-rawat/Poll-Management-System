@@ -28,13 +28,13 @@ const UsersPoll = () => {
       <center> <h2 className='text-light'> welcome to User Poll</h2>
         <div className="float-right text-danger mx-5" onClick={() => logOut()}>Logout</div>
       </center>
-      <div className='container'>
+      <div className='container data-container'>
         <div className="row">
           <div className="col">
             {pollList.length > 0 && pollList.slice().reverse().map((dataList) => (
               <div className="card my-3" key={dataList._id}>
                   <div>
-                    <div className="card-header">
+                    <div className="card-header bg-success">
                       <h5 className="card-title">{dataList.title}</h5>
                     </div>
                     <div className="card-body">
@@ -42,7 +42,7 @@ const UsersPoll = () => {
                         <div className="form-check" key={index}>
 
                           <input
-                            className="form-check-input"
+                            className="form-check-input input-radio-btn"
                             type="radio"
                             name="exampleRadios" id="exampleRadios2"
                             value={option.option} />

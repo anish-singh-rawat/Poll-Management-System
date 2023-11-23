@@ -10,11 +10,18 @@ import { deleteOption } from '../../Redux/slice/deleteOption'
 
 const AdminPoll = () => {
   const pollList = useSelector((state) => state.pollSlice.data.data)
+  const deleteTtileloading = useSelector((state) => state.deleteTitleSlice.isLoading)
+  const deleteOptionloading = useSelector((state) => state.deleteOptionSlice.isLoading)
+  const editTitleSliceloading = useSelector((state) => state.editTitleSlice.isLoading)
+  const AddOptionSlice = useSelector((state) => state.AddOptionSlice.isLoading)
+
+  
   const navigate = useNavigate()
 
   useEffect(() => {
     dispatch(pollManage())
-  }, [])
+  }, [deleteTtileloading,editTitleSliceloading,deleteOptionloading,AddOptionSlice, !pollList])
+
   const logOut = () => {
     navigate('/login')
     dispatch(resetReducer())
@@ -28,11 +35,12 @@ const AdminPoll = () => {
     dispatch(deleteOption(optionInd, optionText.option))
   }
 
-  if (!pollList) {
-    return <h3> <center className='text-warning'> Loading.... </center> </h3>
+  if (!pollList || deleteTtileloading ||  deleteOptionloading || AddOptionSlice ||
+  editTitleSliceloading) {
+    return <h3> <center className='text-warning'> Loading.... </center> </h3>;
   }
 
-  
+
   return (
     <>
       <center> <h2 className='text-light'> welcome to Admin Page</h2>
@@ -45,57 +53,60 @@ const AdminPoll = () => {
         AddPoll +
       </Link>
 
-      <div className='container mt-2' style={{ wordWrap: 'break-word' }}>
+      <div className='container data-container mt-2'
+        style={{ wordWrap: 'break-word' }}>
         <div className="row">
           <div className="col">
             {pollList.length > 0 && pollList.slice().reverse().map((dataList) => (
               <div key={dataList._id}>
-                  <div className="card mt-3">
-                    <div className="card-header bg-success text-light ">
-                      <h5 className="card-title " style={{ wordWrap: 'break-word' }}>   {dataList.title}
-                      </h5>
-                      <div className="shift-right d-flex justify-content-around">
-                  
-                        {
-                          dataList.options.length<4 &&
-                        <Link to={`/AddOption/${dataList._id}`} 
-                        className="fa-solid fa-plus text-white"
-                        style={{textDecoration : 'none'}}>
+                <div className="card  mt-3">
+                  <div className="card-header bg-success text-light ">
+                    <h5 className="card-title " style={{ wordWrap: 'break-word' }}>   {dataList.title}
+                    </h5>
+                    <div className="shift-right d-flex justify-content-around">
+
+                      {
+                        dataList.options.length < 4 &&
+                        <Link to={`/AddOption/${dataList._id}`}
+                          className="fa-solid fa-plus text-white"
+                          style={{ textDecoration: 'none' }}>
 
                         </Link>
-                        }
+                      }
 
-                        <Link to={`/Editdata/${dataList._id}`} state={dataList.title}
-                          className="fa-regular fa-pen-to-square mx-5 text-light">
-                        </Link>
-
+                      <Link to={`/Editdata/${dataList._id}`} state={dataList.title}
+                        className="fa-regular fa-pen-to-square mx-5 text-light">
+                      </Link>
+                      
                         <i className="fa-solid fa-trash"
-                          onClick={() => deleteTitleData(dataList._id)}>
-                        </i>
+                        onClick={() => deleteTitleData(dataList._id)}>
+                      </i>
 
-                      </div>
-                    </div>
-                    <div className="card-body">
-                      {dataList.options.map((option, ind) => (
-                        <div className="form-check mt-2 p-2" key={ind}
-                          style={{ border: '1px solid grey', borderRadius: '10px' }}>
+                   
 
-                          <div className="d-flex justify-content-between">
-                            <div className='text-sm text-md-lg text-lg-xl '
-                              style={{ wordWrap: 'break-word' }}>
-                              {option.option}
-                            </div>
-                            <div className="icons d-flex">
-                              <div className="vote-div mx-5">vote : 0</div>
-                              <i className="fa-solid fa-trash"
-                                onClick={() => deleteOptionData(dataList._id, option)} >
-                              </i>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
                     </div>
                   </div>
+                  <div className="card-body">
+                    {dataList.options.map((option, ind) => (
+                      <div className="form-check mt-2 p-2" key={ind}
+                        style={{ border: '1px solid grey', borderRadius: '10px' }}>
+
+                        <div className="d-flex justify-content-between">
+                          <div className='text-sm text-md-lg text-lg-xl '
+                            style={{ wordWrap: 'break-word' }}>
+                            {option.option}
+                          </div>
+                          <div className="icons d-flex">
+                            <div className="vote-div mx-5">vote : 0</div>
+                            <i className="fa-solid fa-trash"
+                              onClick={() => deleteOptionData(dataList._id, option)} >
+                            </i>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             ))}
           </div>

@@ -7,6 +7,8 @@ import  listDataSlice  from "../slice/listData";
 import  deleteTitleSlice  from "../slice/DeleteTitle";
 import  deleteOptionSlice  from "../slice/deleteOption";
 import  editTitleSlice  from "../slice/EditTitle";
+import  AddOptionSlice  from "../slice/AddOption";
+
 
 
  const rootReducer = combineReducers({
@@ -17,6 +19,7 @@ import  editTitleSlice  from "../slice/EditTitle";
     listDataSlice : listDataSlice,
     deleteTitleSlice : deleteTitleSlice,
     deleteOptionSlice : deleteOptionSlice,
-    editTitleSlice : editTitleSlice
+    editTitleSlice : editTitleSlice,
+    AddOptionSlice : AddOptionSlice
 })
 export default rootReducer

@@ -65,10 +65,8 @@ const AddData = () => {
                         onChange={formikData.handleChange} placeholder="Enter message title" />
 
                     {formikData.errors.title &&
-                        <p className="text-danger">{formikData.errors.title}</p>}
-
+                    <p className="text-danger">{formikData.errors.title}</p>}
                 </div>
-
                 {
                     newOptions.map((items, index) => (
                         <div className="form-group mt-3" key={index}>
@@ -84,7 +82,6 @@ const AddData = () => {
                         </div>
                     ))
                 }
-
                 <div className="add-option mt-4">
                     <h2 onClick={() => increseLength()}>+</h2>
                 </div>
