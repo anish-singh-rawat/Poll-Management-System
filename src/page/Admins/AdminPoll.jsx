@@ -20,7 +20,7 @@ const AdminPoll = () => {
 
   useEffect(() => {
     dispatch(pollManage())
-  }, [deleteTtileloading,editTitleSliceloading,deleteOptionloading,AddOptionSlice, !pollList])
+  }, [deleteTtileloading,editTitleSliceloading,deleteOptionloading,AddOptionSlice, !pollList,pollList])
 
   const logOut = () => {
     navigate('/login')
@@ -111,6 +111,15 @@ const AdminPoll = () => {
             ))}
           </div>
         </div>
+      </div>
+      <div className='d-flex justify-content-center mt-3 text-light'>
+        <p> Rows per page: </p>
+        <select className='mx-3 mb-4 text-light'
+          style={{ background: 'none', border: 'none' }} >
+          <option className='text-dark'>5</option>
+          <option className='text-dark'>10</option>
+          <option className='text-dark'>15</option>
+        </select>
       </div>
     </>
   )
