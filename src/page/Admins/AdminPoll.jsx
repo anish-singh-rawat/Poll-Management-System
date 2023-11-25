@@ -48,7 +48,7 @@ const AdminPoll = () => {
 
   useEffect(() => {
     dispatch(pollManage());
-  }, [deleteTitleLoading, editTitleSliceLoading, deleteOptionLoading, addOptionSliceLoading, !pollList, pollList]);
+  }, [deleteTitleLoading, editTitleSliceLoading, deleteOptionLoading, addOptionSliceLoading]);
 
   const logOut = () => {
     navigate('/login');
@@ -127,6 +127,7 @@ const AdminPoll = () => {
                             </div>
                             <div className="icons d-flex">
                               <div className="vote-div mx-5">vote : {option.vote}</div>
+                            
                               <i className="fa-solid fa-trash" onClick={() => deleteOptionData(dataList._id, option)}></i>
                             </div>
                           </div>

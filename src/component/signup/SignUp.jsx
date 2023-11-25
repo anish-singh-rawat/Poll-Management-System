@@ -8,6 +8,7 @@ import { resetReducer, signup } from '../../Redux/slice/signUp'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSelector } from 'react-redux';
+import { Backdrop, CircularProgress } from '@mui/material';
 
 const SignUp = () => {
   const navigate = useNavigate()
@@ -43,6 +44,7 @@ const SignUp = () => {
         }
         else {
           dispatch(signup(values));
+          dispatch(resetReducer());
         }
       }
        catch (error) {
@@ -50,6 +52,18 @@ const SignUp = () => {
       }
     },
   })
+
+  if (signupSlice.isSuccess) {
+    return (
+      <h3>
+        <center className="text-warning"> Loading... </center>
+        <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={true}>
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      </h3>
+    );
+  }
 
   return (
     <>
