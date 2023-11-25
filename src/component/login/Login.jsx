@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux';
 import { jwtDecode } from 'jwt-decode';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
+import { Backdrop, CircularProgress } from '@mui/material';
 
 const Login = () => {
   const navigate = useNavigate()
@@ -21,13 +22,19 @@ const Login = () => {
       dispatch(resetReducer());
       if (decoded.role === "admin" || decoded.role === "Admin") {
         navigate("/adminPoll");
+        dispatch(resetReducer());
+
       } else if (decoded.role === "Guest" || decoded.role === "guest") {
         navigate("/userPoll");
+        dispatch(resetReducer());
+
       }
     }
     else if (loginSlice.data.error === 1) {
       toast.error("user does not exist!");
     }
+    dispatch(resetReducer());
+
   }, [loginSlice.isSuccess])
 
   const formikData = useFormik({
@@ -41,11 +48,24 @@ const Login = () => {
           dispatch(resetReducer());
         }
         dispatch(login(values));
+        dispatch(resetReducer());
+
       } catch (error) { }
     },
     validationSchema: schema,
   });
 
+  if (loginSlice.isSuccess) {
+    return (
+      <h3>
+        <center className="text-warning"> Loading... </center>
+        <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={true}>
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      </h3>
+    );
+  }
   return (
     <>
       <ToastContainer />
