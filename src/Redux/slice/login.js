@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { dispatch } from "../store/store";
-import axios from "axios";
+import Instance from "../../utilities/axios";
 
 const initialState = {
   isLoading: false,
@@ -42,7 +42,7 @@ export function login(payload) {
  return async () => {
    dispatch(loginSlice.actions.startLoading());
     try {
-      const response = await  axios.post(`https://etechpolltesting.onrender.com/login?username=${payload.username}&password=${payload.userpassword}`, { payload });
+      const response = await  Instance.post(`login?username=${payload.username}&password=${payload.userpassword}`, { payload });
       dispatch(loginSlice.actions.loginSuccess(response.data));
     } catch (e) {
      dispatch(loginSlice.actions.hasError(e));

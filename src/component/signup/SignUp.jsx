@@ -1,15 +1,30 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { dispatch } from '../../Redux/store/store';
 import { Link, useNavigate } from 'react-router-dom';
 import './SignUp.css'
 import { useFormik } from 'formik'
 import { schema } from '../../utilities/utilities'
-import { signup } from '../../Redux/slice/signUp'
+import { resetReducer, signup } from '../../Redux/slice/signUp'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useSelector } from 'react-redux';
 
 const SignUp = () => {
   const navigate = useNavigate()
+
+  const signupSlice = useSelector((state) => state.signupSlice);
+
+  useEffect(()=>{
+    if(signupSlice.data.error === 1){
+      toast.error(signupSlice.data.message);
+      dispatch(resetReducer())
+    }
+    else if (signupSlice.data.error === 0){
+      toast.success('signUp successfully')
+      navigate("/login")
+      dispatch(resetReducer())
+    }
+  },[signupSlice.isSuccess])
 
   const formikData = useFormik({
     initialValues: {
@@ -19,15 +34,19 @@ const SignUp = () => {
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      if (values.username.length < 5) {
-        toast.warning("user name must be atleast 5 charecter!");
+      try {
+        if (values.username.length < 5) {
+          toast.warning("user name must be atleast 5 charecter!");
+        }
+        else if (values.userpassword.length < 5) {
+          toast.warning("user password must be atleast 5 charecter")
+        }
+        else {
+          dispatch(signup(values));
+        }
       }
-      else if (values.userpassword.length < 6) {
-        toast.warning("user password must be atleast 6 charecter")
-      }
-      else {
-        dispatch(signup(values));
-        navigate("/login")
+       catch (error) {
+        dispatch(resetReducer());
       }
     },
   })
@@ -48,9 +67,8 @@ const SignUp = () => {
                     <br />
                     <input type="text" name='username'
                       onChange={formikData.handleChange}
-                      value={formikData.values.username} className='user-name-input mt-2' />
-                    {formikData.errors.username && formikData.touched.username &&
-                      <p className="text-danger">{formikData.errors.username}</p>}
+                      value={formikData.values.username}
+                       className='user-name-input mt-2' />
 
                   </div>
 

@@ -8,8 +8,9 @@ const initialState = {
   isError: false,
   data: {},
 };
-const signupSlice = createSlice({
-  name: "signup",
+
+const addVote = createSlice({
+  name: "addVote",
   initialState,
   reducers: {
     startLoading(state) {
@@ -37,20 +38,20 @@ const signupSlice = createSlice({
   },
 });
 
-export function signup(payload) {
+export function VoteData(VoteId, VoteOptionText, header) {
   return async () => {
-
-    dispatch(signupSlice.actions.startLoading());
-
+    dispatch(addVote.actions.startLoading());
     try {
-      const response = await
-        Instance.post(`add_user?username=${payload.username}&password=${payload.userpassword}&role=${payload.role}`);
-      dispatch(signupSlice.actions.loginSuccess(response.data));
-    } catch (e) {
-      dispatch(signupSlice.actions.hasError(e));
+      const response = await Instance.get(`do_vote?id=${VoteId}&option_text=${VoteOptionText}`, header);
+      dispatch(addVote.actions.loginSuccess(response.data));
+    } catch (error) {
+      dispatch(addVote.actions.hasError(error));
     }
   }
 }
 
-export const { startLoading, hasError, loginSuccess, resetReducer } = signupSlice.actions;
-export default signupSlice.reducer;
+export const { startLoading, hasError, loginSuccess, resetReducer }
+  = addVote.actions;
+export default addVote.reducer;
+
+

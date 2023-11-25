@@ -8,8 +8,9 @@ const initialState = {
   isError: false,
   data: {},
 };
-const signupSlice = createSlice({
-  name: "signup",
+
+const deleteTitleSlice = createSlice({
+  name: "deleteTitle",
   initialState,
   reducers: {
     startLoading(state) {
@@ -37,20 +38,20 @@ const signupSlice = createSlice({
   },
 });
 
-export function signup(payload) {
+export function DeleteTitle(payload) {
   return async () => {
-
-    dispatch(signupSlice.actions.startLoading());
-
+    dispatch(deleteTitleSlice.actions.startLoading());
     try {
-      const response = await
-        Instance.post(`add_user?username=${payload.username}&password=${payload.userpassword}&role=${payload.role}`);
-      dispatch(signupSlice.actions.loginSuccess(response.data));
+        const response = await Instance.delete(`delete_poll?id=${payload}`);
+      dispatch(deleteTitleSlice.actions.loginSuccess(response.data));
     } catch (e) {
-      dispatch(signupSlice.actions.hasError(e));
+      dispatch(deleteTitleSlice.actions.hasError(e));
     }
   }
 }
 
-export const { startLoading, hasError, loginSuccess, resetReducer } = signupSlice.actions;
-export default signupSlice.reducer;
+export const { startLoading, hasError, loginSuccess, resetReducer } 
+= deleteTitleSlice.actions;
+export default deleteTitleSlice.reducer;
+
+
