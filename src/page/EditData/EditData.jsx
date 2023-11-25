@@ -9,7 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 const EditData = () => { 
 
     const location = useLocation()
-    const {EditDataId} = useParams();
+    const {editDataId} = useParams();
     const navigate = useNavigate()
     
   const formikEditData = useFormik({
@@ -21,7 +21,7 @@ const EditData = () => {
       try {
         if (values.Edittitle.trim() !== '') {
             toast.success("data Update successfully")
-            dispatch(EditTitle(EditDataId,values.Edittitle ))
+            dispatch(EditTitle(editDataId,values.Edittitle ))
             navigate('/adminPoll')
         }
         else{

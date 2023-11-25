@@ -17,8 +17,8 @@ export default function Router() {
         <Route path='/adminPoll' element={<AdminPoll/> }/>
         <Route path='/userPoll' element={<UsersPoll/> }/>
         <Route path='/AddData' element={<AddData/> }/>
-        <Route path='/Editdata/:EditDataId' element={<EditData/> }/>
-        <Route path='/AddOption/:OptionDataId' element={<Option/> }/>
+        <Route path='/Editdata/:editDataId' element={<EditData/> }/>
+        <Route path='/AddOption/:optionDataId' element={<Option/> }/>
     </Routes>
   )
 }

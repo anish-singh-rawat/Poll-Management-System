@@ -6,13 +6,13 @@ import { AddOption } from '../../Redux/slice/AddOption'
 
 const Option = () => {
     const [optionData, setOptionData] = useState('');
-    const { OptionDataId } = useParams();
+    const { optionDataId } = useParams();
     const navigate = useNavigate();
     
     const handleForm = (e) => {
         e.preventDefault();
         if (optionData.trim() !== '') {
-            dispatch(AddOption(OptionDataId, optionData));
+            dispatch(AddOption(optionDataId, optionData));
             navigate('/AdminPoll');
         } else {
             toast.error("Please enter data");
