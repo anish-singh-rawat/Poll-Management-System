@@ -9,7 +9,7 @@ const initialState = {
   data: {},
 };
 
-const AddVote = createSlice({
+const addVote = createSlice({
   name: "addVote",
   initialState,
   reducers: {
@@ -40,18 +40,18 @@ const AddVote = createSlice({
 
 export function VoteData(VoteId, VoteOptionText, header) {
   return async () => {
-    dispatch(AddVote.actions.startLoading());
+    dispatch(addVote.actions.startLoading());
     try {
       const response = await Instance.get(`do_vote?id=${VoteId}&option_text=${VoteOptionText}`, header);
-      dispatch(AddVote.actions.loginSuccess(response.data));
+      dispatch(addVote.actions.loginSuccess(response.data));
     } catch (error) {
-      dispatch(AddVote.actions.hasError(error));
+      dispatch(addVote.actions.hasError(error));
     }
   }
 }
 
 export const { startLoading, hasError, loginSuccess, resetReducer }
-  = AddVote.actions;
-export default AddVote.reducer;
+  = addVote.actions;
+export default addVote.reducer;
 
 

@@ -7,8 +7,8 @@ import  listDataSlice  from "../slice/listData";
 import  deleteTitleSlice  from "../slice/DeleteTitle";
 import  deleteOptionSlice  from "../slice/deleteOption";
 import  editTitleSlice  from "../slice/EditTitle";
-import  AddOptionSlice  from "../slice/AddOption";
-import  AddVote  from "../slice/AddVote";
+import  addOptionSlice  from "../slice/AddOption";
+import  addVote  from "../slice/AddVote";
 
  const rootReducer = combineReducers({
     signupSlice : signupSlice,
@@ -19,7 +19,7 @@ import  AddVote  from "../slice/AddVote";
     deleteTitleSlice : deleteTitleSlice,
     deleteOptionSlice : deleteOptionSlice,
     editTitleSlice : editTitleSlice,
-    AddOptionSlice : AddOptionSlice,
-    AddVote : AddVote,
+    addOptionSlice : addOptionSlice,
+    addVote : addVote,
 })
 export default rootReducer

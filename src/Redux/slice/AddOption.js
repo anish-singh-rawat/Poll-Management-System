@@ -9,7 +9,7 @@ const initialState = {
   data: {},
 };
 
-const AddOptionSlice = createSlice({
+const addOptionSlice = createSlice({
   name: "Addoption",
   initialState,
   reducers: {
@@ -40,19 +40,19 @@ const AddOptionSlice = createSlice({
 
 export function AddOption(OptionId, OptionData) {
   return async () => {
-    dispatch(AddOptionSlice.actions.startLoading());
+    dispatch(addOptionSlice.actions.startLoading());
     try {
       const response = await Instance.delete(`add_new_option?id=${OptionId}&option_text=${OptionData}`);
-      dispatch(AddOptionSlice.actions.loginSuccess(response.data));
+      dispatch(addOptionSlice.actions.loginSuccess(response.data));
       
     } catch (error) {
-      dispatch(AddOptionSlice.actions.hasError(error));
+      dispatch(addOptionSlice.actions.hasError(error));
     }
   }
 }
 
 export const { startLoading, hasError, loginSuccess, resetReducer }
-  = AddOptionSlice.actions;
-export default AddOptionSlice.reducer;
+  = addOptionSlice.actions;
+export default addOptionSlice.reducer;
 
 
