@@ -5,8 +5,13 @@ import { pollManage } from '../../Redux/slice/AdminPoll';
 import { useNavigate } from 'react-router-dom';
 import { resetReducer } from '../../Redux/slice/login';
 import { VoteData } from '../../Redux/slice/AddVote';
+import { toast } from 'react-toastify';
 
 const UsersPoll = () => {
+
+  const [page, setPage] = useState(5);
+  const [rowIndex, setRowIndex] = useState(0);
+
   const [disabledOptions, setDisabledOptions] = useState({});
   const pollList = useSelector((state) => state.pollSlice.data.data);
   const token = localStorage.getItem('token');
@@ -35,6 +40,30 @@ const UsersPoll = () => {
       [title]: true,
     }));
   };
+  
+  const handleChangePage = (newpage) => {
+    setPage(newpage);
+  };
+
+  const increasePage = () => {
+    if (pollList.length >= page) {
+      setRowIndex(page);
+      setPage( page + page);
+    } else {
+      toast.warning('No more pages available');
+    }
+  };
+
+  const decreasePage = () => {
+    if (rowIndex !== 0) {
+      const newRowIndex = Math.max(rowIndex - page, 0);
+      setPage(page - rowIndex);
+      setRowIndex(newRowIndex);
+    } else {
+      toast.warning('You are in the first page');
+    }
+  };
+  
 
   if (!pollList) {
     return <h3 className='text-warning'> <center> Loading.... </center> </h3>;
@@ -53,7 +82,7 @@ const UsersPoll = () => {
         <div className="row">
           <div className="col">
             {pollList.length > 0 &&
-              pollList.slice().reverse().map((dataList) => (
+              pollList.slice(rowIndex , page).reverse().map((dataList) => (
                 <div className="card my-3" key={dataList._id}>
                   <div>
                     <div className="card-header bg-success">
@@ -88,16 +117,26 @@ const UsersPoll = () => {
         </div>
       </div>
 
-      <div className='d-flex justify-content-center mt-3 text-light'>
+      <div className="d-flex justify-content-center mt-3 text-light">
         <p> Rows per page: </p>
         <select
-          className='mx-3 mb-4 text-light'
+          className="mx-3 mb-4 text-light"
           style={{ background: 'none', border: 'none' }}
+          onChange={(e) => handleChangePage(e.target.value)}
         >
-          <option className='text-dark'>5</option>
-          <option className='text-dark'>10</option>
-          <option className='text-dark'>15</option>
+          <option className="text-dark">5</option>
+          <option className="text-dark">10</option>
+          <option className="text-dark">15</option>
         </select>
+        <div className="page-selection">
+          <i className="fa-solid fa-less-than" onClick={() => decreasePage()}></i>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+           {page > pollList.length ? pollList.length : page} 
+           &nbsp;
+            of {pollList.length}
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <i className="fa-solid fa-greater-than" onClick={() => increasePage()}></i>
+        </div>
       </div>
     </>
   );

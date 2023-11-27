@@ -13,17 +13,21 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const AdminPoll = () => {
   const dispatch = useDispatch();
-  const [page, setPage] = useState(5);
-  const [rowIndex, setRowIndex] = useState(0);
+  
+  const [page, setPage] = useState(Number(localStorage.getItem('page')) || 5);
+  const [rowIndex, setRowIndex] = useState(Number(localStorage.getItem('rowIndex')) || 0);
 
   const handleChangePage = (newpage) => {
     setPage(newpage);
+    localStorage.setItem('page', newpage);
   };
 
   const increasePage = () => {
     if (pollList.length >= page) {
       setRowIndex(page);
-      setPage( page + page);
+      setPage(page + page);
+      localStorage.setItem('page', page + page);
+      localStorage.setItem('rowIndex', page);
     } else {
       toast.warning('No more pages available');
     }
@@ -34,8 +38,10 @@ const AdminPoll = () => {
       const newRowIndex = Math.max(rowIndex - page, 0);
       setPage(page - rowIndex);
       setRowIndex(newRowIndex);
+      localStorage.setItem('page', page - rowIndex);
+      localStorage.setItem('rowIndex', newRowIndex);
     } else {
-      toast.warning('You are in the first page');
+      toast.warning('You are on the first page');
     }
   };
   
@@ -74,6 +80,7 @@ const AdminPoll = () => {
     );
   }
 
+
   return (
     <>
       <ToastContainer />
@@ -84,11 +91,10 @@ const AdminPoll = () => {
         </div>
       </center>
 
-      <Link
-        to={'/AddData'}
+      <Link to={'/AddData'}
         className="d-flex justify-content-center align-item-center text-light"
-        style={{ fontSize: '22px', fontWeight: 'bold', cursor: 'pointer', textDecoration: 'none' }}
-      >
+        style={{ fontSize: '22px', fontWeight: 'bold', cursor: 'pointer', 
+        textDecoration: 'none' }}>
         AddPoll +
       </Link>
 
