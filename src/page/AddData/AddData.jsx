@@ -12,9 +12,7 @@ const AddData = () => {
     const [newOptions, setNewOptions] = useState([{ option: '' }]);
     const navigate = useNavigate()
      const listDataloading = useSelector((state)=> state.listDataSlice.isSuccess)
-
-
-
+     
     const formikData = useFormik({
         initialValues: {
             title: '',
@@ -58,8 +56,6 @@ const AddData = () => {
         onchangeValue[index][name] = value
         setNewOptions(onchangeValue)
     }
-    console.log(listDataloading);
-
 
     if (listDataloading  ) {
         return (

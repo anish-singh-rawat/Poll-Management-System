@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { pollManage } from '../../Redux/slice/AdminPoll';
 import './Admin.css';
 import { resetReducer } from '../../Redux/slice/listData';
@@ -10,51 +10,33 @@ import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { TablePagination } from '@mui/material';
+import { dispatch } from '../../Redux/store/store';
 
 const AdminPoll = () => {
-  const dispatch = useDispatch();
-  
-  const [page, setPage] = useState( 5);
-  const [rowIndex, setRowIndex] = useState( 0);
 
-  const handleChangePage = (newpage) => {
-    setPage(newpage);
-    localStorage.setItem('page', newpage);
-  };
+  const [page, setPage] = useState(0);
+  const [rowsPerPageOption, setRowPerPageOption] = useState([5,10,15]);
+  const handlePageChange = (event, updatedPage)=> setPage(updatedPage)
 
-  const increasePage = () => {
-    if (pollList.length >= page) {
-      setRowIndex(page);
-      setPage(page + page);
-      localStorage.setItem('page', page + page);
-      localStorage.setItem('rowIndex', page);
-    } else {
-      toast.warning('No more pages available');
-    }
-  };
+  const handleRowPerPageChange = (event)=>{
+    setRowPerPage(event.target.value)
+    setPage(0)
+  }
+  const [rowPerPage, setRowPerPage] = useState(5)
 
-  const decreasePage = () => {
-    if (rowIndex !== 0) {
-      const newRowIndex = Math.max(rowIndex - page, 0);
-      setPage(page - rowIndex);
-      setRowIndex(newRowIndex);
-    } else {
-      toast.warning('You are on the first page');
-    }
-  };
-  
-  const pollList = useSelector((state) => state.pollSlice.data.data);
+  const pollList = useSelector((state) => state.pollSlice.data);
   const deleteTitleLoading = useSelector((state) => state.deleteTitleSlice.isLoading);
   const deleteOptionLoading = useSelector((state) => state.deleteOptionSlice.isLoading);
   const editTitleSliceLoading = useSelector((state) => state.editTitleSlice.isLoading);
   const addOptionSliceLoading = useSelector((state) => state.addOptionSlice.isLoading);
-  const listDataloading = useSelector((state)=> state.listDataSlice.isLoading)
+  const listDataloading = useSelector((state) => state.listDataSlice.isLoading)
 
   const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(pollManage());
-  }, [deleteTitleLoading, editTitleSliceLoading, deleteOptionLoading, addOptionSliceLoading,listDataloading ]);
+  }, [deleteTitleLoading, editTitleSliceLoading, deleteOptionLoading, addOptionSliceLoading, listDataloading]);
 
   const logOut = () => {
     navigate('/login');
@@ -69,7 +51,7 @@ const AdminPoll = () => {
     dispatch(deleteOption(optionInd, optionText.option));
   };
 
-  if (!pollList || deleteTitleLoading || deleteOptionLoading || addOptionSliceLoading || editTitleSliceLoading||listDataloading ) {
+  if (!pollList || deleteTitleLoading || deleteOptionLoading || addOptionSliceLoading || editTitleSliceLoading || listDataloading) {
     return (
       <h3>
         <center className="text-warning"> Loading... </center>
@@ -79,7 +61,6 @@ const AdminPoll = () => {
       </h3>
     );
   }
-
 
   return (
     <>
@@ -93,8 +74,10 @@ const AdminPoll = () => {
 
       <Link to={'/AddData'}
         className="d-flex justify-content-center align-item-center text-light"
-        style={{ fontSize: '22px', fontWeight: 'bold', cursor: 'pointer', 
-        textDecoration: 'none' }}>
+        style={{
+          fontSize: '22px', fontWeight: 'bold', cursor: 'pointer',
+          textDecoration: 'none'
+        }}>
         AddPoll +
       </Link>
 
@@ -102,7 +85,7 @@ const AdminPoll = () => {
         <div className="row">
           <div className="col">
             {pollList.length > 0 &&
-              pollList.slice(rowIndex, page).reverse().map((dataList) => (
+              pollList.slice(page * rowPerPage, page*rowPerPage + rowPerPage).map((dataList) => (
                 <div key={dataList._id}>
                   <div className="card mt-3">
                     <div className="card-header bg-success text-light ">
@@ -126,14 +109,14 @@ const AdminPoll = () => {
                     <div className="card-body">
                       {dataList.options.map((option, ind) => (
                         <div className="form-check mt-2 p-2" key={ind}
-                        style={{borderBottom : '1px solid black'}} >
+                          style={{ borderBottom: '1px solid black' }} >
                           <div className="d-flex justify-content-between">
                             <div className="text-sm text-md-lg text-lg-xl" style={{ wordWrap: 'break-word' }}>
                               {option.option}
                             </div>
                             <div className="icons d-flex">
                               <div className="vote-div mx-5">vote : {option.vote}</div>
-                            
+
                               <i className="fa-solid fa-trash" onClick={() => deleteOptionData(dataList._id, option)}></i>
                             </div>
                           </div>
@@ -147,27 +130,18 @@ const AdminPoll = () => {
         </div>
       </div>
 
-      <div className="d-flex justify-content-center mt-3 text-light">
-        <p> Rows per page: </p>
-        <select
-          className="mx-3 mb-4 text-light"
-          style={{ background: 'none', border: 'none' }}
-          onChange={(e) => handleChangePage(e.target.value)}
-        >
-          <option className="text-dark">5</option>
-          <option className="text-dark">10</option>
-          <option className="text-dark">15</option>
-        </select>
-        <div className="page-selection">
-          <i className="fa-solid fa-less-than" onClick={() => decreasePage()}></i>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-           {page > pollList.length ? pollList.length : page} 
-           &nbsp;
-            of {pollList.length}
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <i className="fa-solid fa-greater-than" onClick={() => increasePage()}></i>
-        </div>
+      <div className="mt-2">
+      <TablePagination
+       style={{ display : 'flex', justifyContent: 'center' ,color : 'white'}}
+        component="div"
+        rowsPerPageOptions={rowsPerPageOption}
+        count={pollList.length}
+        page={!pollList.length || pollList.length<= 0? 0 : page}
+        rowsPerPage={rowPerPage}
+        onPageChange={handlePageChange}
+        onRowsPerPageChange={handleRowPerPageChange} />
       </div>
+    
     </>
   );
 };

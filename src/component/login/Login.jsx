@@ -104,7 +104,7 @@ const Login = () => {
                     }
                     <br />
                     <br />
-                    <Link to={'/signup'} className="sign-up mt-3">
+                    <Link to={'/signup'} className="sign-up mt-3 text-dark">
                       don't have account ? register now
                     </Link>
                   </center>
