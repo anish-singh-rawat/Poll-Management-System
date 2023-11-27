@@ -5,10 +5,15 @@ import { listData, resetReducer } from '../../Redux/slice/listData';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Link, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { Backdrop, CircularProgress } from '@mui/material';
 
 const AddData = () => {
     const [newOptions, setNewOptions] = useState([{ option: '' }]);
     const navigate = useNavigate()
+     const listDataloading = useSelector((state)=> state.listDataSlice.isSuccess)
+
+
 
     const formikData = useFormik({
         initialValues: {
@@ -19,9 +24,11 @@ const AddData = () => {
                 if (values.title.trim() !== '') {
                     if (newOptions[0].option.trim() !== '') {
                         dispatch(listData(values, newOptions));
-                        toast.success("data add successfully")
-                        navigate('/adminpoll')
+                        setTimeout(() => {
+                            navigate('/adminpoll')
+                        }, 200);
                     }
+
                     else {
                         toast.warning('Please enter Opions')
                     }
@@ -51,6 +58,18 @@ const AddData = () => {
         onchangeValue[index][name] = value
         setNewOptions(onchangeValue)
     }
+    console.log(listDataloading);
+
+
+    if (listDataloading  ) {
+        return (
+          <h3>
+            <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={true}>
+              <CircularProgress color="inherit" />
+            </Backdrop>
+          </h3>
+        );
+      }
 
 
     return (
@@ -65,7 +84,7 @@ const AddData = () => {
                         onChange={formikData.handleChange} placeholder="Enter message title" />
 
                     {formikData.errors.title &&
-                    <p className="text-danger">{formikData.errors.title}</p>}
+                        <p className="text-danger">{formikData.errors.title}</p>}
                 </div>
                 {
                     newOptions.map((items, index) => (
@@ -86,9 +105,14 @@ const AddData = () => {
                     <h2 onClick={() => increseLength()}>+</h2>
                 </div>
                 <div className="d-flex justify-content-between mt-4">
-                    <button type='submit' className="btn btn-success">
-                        Submit
-                    </button>
+                    {
+                         listDataloading ?
+                            <CircularProgress color="inherit" />
+                            :
+                            <button type='submit' className="btn btn-success">
+                                Submit
+                            </button>
+                     }
                     <Link to={'/adminPoll'} className="btn btn-danger">
                         cancel
                     </Link>

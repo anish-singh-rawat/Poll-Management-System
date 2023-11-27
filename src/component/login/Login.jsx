@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { dispatch } from '../../Redux/store/store';
 import './Login.css'
 import { Link, useNavigate } from 'react-router-dom'
@@ -9,11 +9,15 @@ import { useSelector } from 'react-redux';
 import { jwtDecode } from 'jwt-decode';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
-import { Backdrop, CircularProgress } from '@mui/material';
-
+import { Backdrop, CircularProgress ,Snackbar} from '@mui/material';
+ 
 const Login = () => {
+  const [buttonDisable, setButtonDisable] = useState(false)
   const navigate = useNavigate()
+
   const loginSlice = useSelector((state) => state.loginSlice);
+  const status = useSelector((state) => state.loginSlice.isLoading);
+
   useEffect(() => {
     if (loginSlice.isSuccess && loginSlice.data.token) {
       const decoded = jwtDecode(loginSlice.data.token);
@@ -22,19 +26,16 @@ const Login = () => {
       dispatch(resetReducer());
       if (decoded.role === "admin" || decoded.role === "Admin") {
         navigate("/adminPoll");
-        dispatch(resetReducer());
-
       } else if (decoded.role === "Guest" || decoded.role === "guest") {
         navigate("/userPoll");
-        dispatch(resetReducer());
-
       }
     }
+
     else if (loginSlice.data.error === 1) {
       toast.error("user does not exist!");
+      setButtonDisable(false)
     }
     dispatch(resetReducer());
-
   }, [loginSlice.isSuccess])
 
   const formikData = useFormik({
@@ -48,24 +49,12 @@ const Login = () => {
           dispatch(resetReducer());
         }
         dispatch(login(values));
-        dispatch(resetReducer());
-
+        setButtonDisable(true)
       } catch (error) { }
     },
     validationSchema: schema,
   });
-
-  if (loginSlice.isSuccess) {
-    return (
-      <h3>
-        <center className="text-warning"> Loading... </center>
-        <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={true}>
-          <CircularProgress color="inherit" />
-        </Backdrop>
-      </h3>
-    );
-  }
+  
   return (
     <>
       <ToastContainer />
@@ -101,13 +90,24 @@ const Login = () => {
                       && formikData.touched.userpassword &&
                       <p className="text-danger">{formikData.errors.userpassword}
                       </p>}
-
                   </div>
 
-                  <div className="button-parent mt-5 d-flex justify-content-around p-3">
-                    <button type="submit" className="login-btn btn btn-success">Log In</button>
-                    <Link to={'/signup'} className="singup-btn btn btn-success">Sign Up</Link>
-                  </div>
+                  <center className='p-4'>
+                    {
+                      status ?
+                        <CircularProgress color="inherit" />
+                        :
+                        <button type="submit" disabled={buttonDisable}
+                          className="login-btn btn btn-success">
+                          Log In
+                        </button>
+                    }
+                    <br />
+                    <br />
+                    <Link to={'/signup'} className="sign-up mt-3">
+                      don't have account ? register now
+                    </Link>
+                  </center>
 
                 </form>
               </div>

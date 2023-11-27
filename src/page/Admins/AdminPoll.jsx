@@ -14,8 +14,8 @@ import 'react-toastify/dist/ReactToastify.css';
 const AdminPoll = () => {
   const dispatch = useDispatch();
   
-  const [page, setPage] = useState(Number(localStorage.getItem('page')) || 5);
-  const [rowIndex, setRowIndex] = useState(Number(localStorage.getItem('rowIndex')) || 0);
+  const [page, setPage] = useState( 5);
+  const [rowIndex, setRowIndex] = useState( 0);
 
   const handleChangePage = (newpage) => {
     setPage(newpage);
@@ -38,8 +38,6 @@ const AdminPoll = () => {
       const newRowIndex = Math.max(rowIndex - page, 0);
       setPage(page - rowIndex);
       setRowIndex(newRowIndex);
-      localStorage.setItem('page', page - rowIndex);
-      localStorage.setItem('rowIndex', newRowIndex);
     } else {
       toast.warning('You are on the first page');
     }
@@ -50,11 +48,13 @@ const AdminPoll = () => {
   const deleteOptionLoading = useSelector((state) => state.deleteOptionSlice.isLoading);
   const editTitleSliceLoading = useSelector((state) => state.editTitleSlice.isLoading);
   const addOptionSliceLoading = useSelector((state) => state.addOptionSlice.isLoading);
+  const listDataloading = useSelector((state)=> state.listDataSlice.isLoading)
+
   const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(pollManage());
-  }, [deleteTitleLoading, editTitleSliceLoading, deleteOptionLoading, addOptionSliceLoading]);
+  }, [deleteTitleLoading, editTitleSliceLoading, deleteOptionLoading, addOptionSliceLoading,listDataloading ]);
 
   const logOut = () => {
     navigate('/login');
@@ -69,7 +69,7 @@ const AdminPoll = () => {
     dispatch(deleteOption(optionInd, optionText.option));
   };
 
-  if (!pollList || deleteTitleLoading || deleteOptionLoading || addOptionSliceLoading || editTitleSliceLoading) {
+  if (!pollList || deleteTitleLoading || deleteOptionLoading || addOptionSliceLoading || editTitleSliceLoading||listDataloading ) {
     return (
       <h3>
         <center className="text-warning"> Loading... </center>

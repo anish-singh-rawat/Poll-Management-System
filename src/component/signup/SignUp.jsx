@@ -15,17 +15,17 @@ const SignUp = () => {
 
   const signupSlice = useSelector((state) => state.signupSlice);
 
-  useEffect(()=>{
-    if(signupSlice.data.error === 1){
+  useEffect(() => {
+    if (signupSlice.data.error === 1) {
       toast.error(signupSlice.data.message);
       dispatch(resetReducer())
     }
-    else if (signupSlice.data.error === 0){
+    else if (signupSlice.data.error === 0) {
       toast.success('signUp successfully')
       navigate("/login")
       dispatch(resetReducer())
     }
-  },[signupSlice.isSuccess])
+  }, [signupSlice.isSuccess])
 
   const formikData = useFormik({
     initialValues: {
@@ -47,7 +47,7 @@ const SignUp = () => {
           dispatch(resetReducer());
         }
       }
-       catch (error) {
+      catch (error) {
         dispatch(resetReducer());
       }
     },
@@ -58,7 +58,7 @@ const SignUp = () => {
       <h3>
         <center className="text-warning"> Loading... </center>
         <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={true}>
+          open={true}>
           <CircularProgress color="inherit" />
         </Backdrop>
       </h3>
@@ -82,7 +82,7 @@ const SignUp = () => {
                     <input type="text" name='username'
                       onChange={formikData.handleChange}
                       value={formikData.values.username}
-                       className='user-name-input mt-2' />
+                      className='user-name-input mt-2' />
 
                   </div>
 
@@ -108,11 +108,17 @@ const SignUp = () => {
                     </select>
                   </div>
 
-                  <div className="button-parent mt-5 d-flex justify-content-around p-3">
-                    <button to={'/signup'} type='submit'
-                      className="singup-btn btn btn-success">Sign Up</button>
-                    <Link to={'/login'} className="login-btn btn btn-success">Sign in</Link>
-                  </div>
+                  <center className='p-4'>
+                  <button to={'/signup'} type='submit' 
+                  className="singup-btn btn btn-success">
+                    Sign Up
+                  </button>
+                  <br />
+                  <br />
+                    <Link to={'/login'} className="sign-up">
+                      already have account ? Login 
+                    </Link>
+                  </center>
 
                 </form>
               </div>
