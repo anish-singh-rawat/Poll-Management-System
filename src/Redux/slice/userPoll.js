@@ -2,12 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 import { dispatch } from "../store/store";
 import Instance from "../../utilities/axios";
 
-// const initialState = {
-//     isLoading: false,
-//     isSuccess: false,
-//     isError: false,
-//     data: [],
-// };
 const pollSlice = createSlice({
     name: "poll",
     initialState : {
