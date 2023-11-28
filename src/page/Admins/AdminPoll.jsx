@@ -32,15 +32,14 @@ const AdminPoll = () => {
   };
 
   const [rowPerPage, setRowPerPage] = useState(row());
-  useEffect(() => {
-    localStorage.setItem("page", page);
-    localStorage.setItem("rowpage", rowPerPage);
-  }, [page, rowPerPage]);
   
   useEffect(() => {
-    const data = JSON.parse(localStorage.getItem("page"));
-    if (data) {
-      setPage(parseInt(data));
+    const page = JSON.parse(localStorage.getItem("page"));
+    const rowpage = JSON.parse(localStorage.getItem("rowpage"));
+
+    if (page , rowpage) {
+      setPage(parseInt(page));
+      setRowPerPage(parseInt(rowpage));
     }
   }, []);
 
