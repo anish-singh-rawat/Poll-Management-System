@@ -5,16 +5,59 @@ import { pollManage } from '../../Redux/slice/AdminPoll';
 import { useNavigate } from 'react-router-dom';
 import { resetReducer } from '../../Redux/slice/login';
 import { VoteData } from '../../Redux/slice/AddVote';
-import { toast } from 'react-toastify';
+import { TablePagination } from '@mui/material';
 
 const UsersPoll = () => {
 
-  const [page, setPage] = useState(5);
-  const [rowIndex, setRowIndex] = useState(0);
+  const [page, setPage] = useState(0);
+  const [rowsPerPageOption, setRowPerPageOption] = useState([5, 10, 15]);
+  const handlePageChange = (event, updatedPage) => setPage(updatedPage)
+
+  const handleRowPerPageChange = (event) => {
+    setRowPerPage(event.target.value)
+    setPage(0)
+  }
+
+  const row = () => {
+    if (localStorage.getItem("rowpage")) {
+      return JSON.parse(localStorage.getItem("rowpage"));
+    }
+    return 5;
+  };
+
+  const [rowPerPage, setRowPerPage] = useState(row());
+  useEffect(() => {
+    localStorage.setItem("page", page);
+    localStorage.setItem("rowpage", rowPerPage);
+  }, [page, rowPerPage]);
+
+  useEffect(() => {
+    const data = JSON.parse(localStorage.getItem("page"));
+    if (data) {
+      setPage(parseInt(data));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("page", page);
+    localStorage.setItem("rowpage", rowPerPage);
+  }, [page, rowPerPage]);
 
   const [disabledOptions, setDisabledOptions] = useState({});
-  const pollList = useSelector((state) => state.pollSlice.data.data);
+  const pollList = useSelector((state) => state.pollSlice.data);
   const token = localStorage.getItem('token');
+
+  
+  useEffect(() => {
+    const storedDisabledOptions = JSON.parse(localStorage.getItem("disabledOptions"));
+    if (storedDisabledOptions) {
+      setDisabledOptions(storedDisabledOptions);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("disabledOptions", JSON.stringify(disabledOptions));
+  }, [disabledOptions]);
 
   const header = {
     headers: {
@@ -23,7 +66,7 @@ const UsersPoll = () => {
   };
 
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     dispatch(pollManage());
   }, [pollList]);
@@ -40,30 +83,7 @@ const UsersPoll = () => {
       [title]: true,
     }));
   };
-  
-  const handleChangePage = (newpage) => {
-    setPage(newpage);
-  };
 
-  const increasePage = () => {
-    if (pollList.length >= page) {
-      setRowIndex(page);
-      setPage( page + page);
-    } else {
-      toast.warning('No more pages available');
-    }
-  };
-
-  const decreasePage = () => {
-    if (rowIndex !== 0) {
-      const newRowIndex = Math.max(rowIndex - page, 0);
-      setPage(page - rowIndex);
-      setRowIndex(newRowIndex);
-    } else {
-      toast.warning('You are in the first page');
-    }
-  };
-  
 
   if (!pollList) {
     return <h3 className='text-warning'> <center> Loading.... </center> </h3>;
@@ -82,7 +102,7 @@ const UsersPoll = () => {
         <div className="row">
           <div className="col">
             {pollList.length > 0 &&
-              pollList.slice(rowIndex , page).reverse().map((dataList) => (
+              pollList.slice(page * rowPerPage, page * rowPerPage + rowPerPage).map((dataList) => (
                 <div className="card my-3" key={dataList._id}>
                   <div>
                     <div className="card-header bg-success">
@@ -97,11 +117,8 @@ const UsersPoll = () => {
                             name={`radio-${dataList._id}`}
                             id={`${index}`}
                             onChange={() =>
-                              inputVoteChange(dataList.title, dataList._id, option.option)
-                            }
-                            disabled={disabledOptions[dataList.title]}
-                          />
-
+                              inputVoteChange(dataList.title, dataList._id, option.option)}
+                            disabled={disabledOptions[dataList.title]} />
                           <label className="form-check-label mx-2" htmlFor={`radio-${dataList._id}-${index}`}>
                             <div className='text-sm text-md-lg text-lg-xl'>
                               {option.option}
@@ -117,27 +134,16 @@ const UsersPoll = () => {
         </div>
       </div>
 
-      <div className="d-flex justify-content-center mt-3 text-light">
-        <p> Rows per page: </p>
-        <select
-          className="mx-3 mb-4 text-light"
-          style={{ background: 'none', border: 'none' }}
-          onChange={(e) => handleChangePage(e.target.value)}
-        >
-          <option className="text-dark">5</option>
-          <option className="text-dark">10</option>
-          <option className="text-dark">15</option>
-        </select>
-        <div className="page-selection">
-          <i className="fa-solid fa-less-than" onClick={() => decreasePage()}></i>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-           {page > pollList.length ? pollList.length : page} 
-           &nbsp;
-            of {pollList.length}
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <i className="fa-solid fa-greater-than" onClick={() => increasePage()}></i>
-        </div>
-      </div>
+      <TablePagination
+        style={{ display: 'flex', justifyContent: 'center', color: 'white' }}
+        component="div"
+        rowsPerPageOptions={rowsPerPageOption}
+        count={pollList.length}
+        page={!pollList.length || pollList.length <= 0 ? 0 : page}
+        rowsPerPage={rowPerPage}
+        onPageChange={handlePageChange}
+        onRowsPerPageChange={handleRowPerPageChange} />
+
     </>
   );
 };

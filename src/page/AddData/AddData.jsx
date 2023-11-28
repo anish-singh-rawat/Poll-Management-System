@@ -10,6 +10,12 @@ const AddData = () => {
     const [newOptions, setNewOptions] = useState([{ option: '' }]);
     const navigate = useNavigate()
 
+    const hasDuplicates = (newOptions) => {
+        const valuesSet = new Set(newOptions.map((item) => item.option.trim()));
+        return newOptions.length !== valuesSet.size;
+    };
+    
+
     const formikData = useFormik({
         initialValues: {
             title: '',
@@ -18,7 +24,12 @@ const AddData = () => {
             try {
                 if (values.title.trim() !== '') {
                     if (newOptions[0].option.trim() !== '') {
-                        dispatch(listData(values, newOptions));
+                        if (hasDuplicates(newOptions)) {
+                            toast.error('Options cannot be the same');
+                            return;
+                        }
+
+                       dispatch(listData(values, newOptions));
                         setTimeout(() => {
                             navigate('/adminpoll')
                         }, 200);

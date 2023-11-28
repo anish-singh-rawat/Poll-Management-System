@@ -8,7 +8,7 @@ import { DeleteTitle } from '../../Redux/slice/DeleteTitle';
 import { deleteOption } from '../../Redux/slice/deleteOption';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { TablePagination } from '@mui/material';
 import { dispatch } from '../../Redux/store/store';
@@ -23,7 +23,31 @@ const AdminPoll = () => {
     setRowPerPage(event.target.value)
     setPage(0)
   }
-  const [rowPerPage, setRowPerPage] = useState(5)
+
+  const row = () => {
+    if (localStorage.getItem("rowpage")) {
+      return JSON.parse(localStorage.getItem("rowpage"));
+    }
+    return 5;
+  };
+
+  const [rowPerPage, setRowPerPage] = useState(row());
+  useEffect(() => {
+    localStorage.setItem("page", page);
+    localStorage.setItem("rowpage", rowPerPage);
+  }, [page, rowPerPage]);
+  
+  useEffect(() => {
+    const data = JSON.parse(localStorage.getItem("page"));
+    if (data) {
+      setPage(parseInt(data));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("page", page);
+    localStorage.setItem("rowpage", rowPerPage);
+  }, [page, rowPerPage]);
 
   const pollList = useSelector((state) => state.pollSlice.data);
   const deleteTitleLoading = useSelector((state) => state.deleteTitleSlice.isLoading);
@@ -51,7 +75,7 @@ const AdminPoll = () => {
     dispatch(deleteOption(optionInd, optionText.option));
   };
 
-  if (!pollList || deleteTitleLoading || deleteOptionLoading || addOptionSliceLoading || editTitleSliceLoading || listDataloading) {
+  if (!pollList || deleteTitleLoading || deleteOptionLoading || addOptionSliceLoading || editTitleSliceLoading || listDataloading ) {
     return (
       <h3>
         <center className="text-warning"> Loading... </center>
@@ -61,6 +85,7 @@ const AdminPoll = () => {
       </h3>
     );
   }
+
 
   return (
     <>
@@ -128,9 +153,10 @@ const AdminPoll = () => {
               ))}
           </div>
         </div>
+    
       </div>
 
-      <div className="mt-2">
+    
       <TablePagination
        style={{ display : 'flex', justifyContent: 'center' ,color : 'white'}}
         component="div"
@@ -139,9 +165,8 @@ const AdminPoll = () => {
         page={!pollList.length || pollList.length<= 0? 0 : page}
         rowsPerPage={rowPerPage}
         onPageChange={handlePageChange}
-        onRowsPerPageChange={handleRowPerPageChange} />
-      </div>
-    
+        onRowsPerPageChange={handleRowPerPageChange}/>
+
     </>
   );
 };
