@@ -120,12 +120,14 @@ const AdminPoll = () => {
                         {dataList.options.length < 4 && (
                           <Link
                             to={`/AddOption/${dataList._id}`}
+                            state={dataList.options}
                             className="fa-solid fa-plus text-white"
                             style={{ textDecoration: 'none' }}
                           ></Link>
                         )}
 
-                        <Link to={`/Editdata/${dataList._id}`} state={dataList.title} className="fa-regular fa-pen-to-square mx-5 text-light"></Link>
+                        <Link to={`/Editdata/${dataList._id}`} 
+                        state={dataList.title} className="fa-regular fa-pen-to-square mx-5 text-light"></Link>
 
                         <i className="fa-solid fa-trash" onClick={() => deleteTitleData(dataList._id)}></i>
                       </div>

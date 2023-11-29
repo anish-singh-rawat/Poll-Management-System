@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { dispatch } from '../../Redux/store/store';
 import './Login.css'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useFormik } from 'formik';
 import { schema } from '../../utilities/utilities';
 import { login, resetReducer } from '../../Redux/slice/login';
@@ -9,9 +9,10 @@ import { useSelector } from 'react-redux';
 import { jwtDecode } from 'jwt-decode';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
-import { Backdrop, CircularProgress ,Snackbar} from '@mui/material';
- 
+import { Backdrop, Button, CircularProgress, Snackbar } from '@mui/material';
+
 const Login = () => {
+
   const [buttonDisable, setButtonDisable] = useState(false)
   const navigate = useNavigate()
 
@@ -54,7 +55,7 @@ const Login = () => {
     },
     validationSchema: schema,
   });
-  
+
   return (
     <>
       <ToastContainer />
@@ -108,15 +109,14 @@ const Login = () => {
                       don't have account ? register now
                     </Link>
                   </center>
-
-                </form>
+                    </form>
+                  </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </>
-  )
+      </>
+      )
 }
 
-export default Login
+      export default Login

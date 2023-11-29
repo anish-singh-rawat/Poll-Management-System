@@ -6,6 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import { resetReducer } from '../../Redux/slice/login';
 import { VoteData } from '../../Redux/slice/AddVote';
 import { TablePagination } from '@mui/material';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const UsersPoll = () => {
 
@@ -69,7 +71,7 @@ const UsersPoll = () => {
 
   useEffect(() => {
     dispatch(pollManage());
-  }, [pollList]);
+  }, []);
 
   const logOut = () => {
     navigate('/login');
@@ -82,6 +84,7 @@ const UsersPoll = () => {
       ...prevOptions,
       [title]: true,
     }));
+    toast.success("Your Vote has been deployed")
   };
 
 
@@ -91,6 +94,8 @@ const UsersPoll = () => {
 
   return (
     <>
+          <ToastContainer />
+
       <center>
         <h2 className='text-light'> welcome to User Poll</h2>
         <div className="float-right text-danger mx-5" onClick={() => logOut()}>
