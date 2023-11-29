@@ -33,7 +33,7 @@ const EditData = () => {
   });
 
     return (
-        <div>
+        <>
             <ToastContainer/>
             <center><h2 className='mt-4 text-light'>Edit Data Here </h2></center>
               <form className='input-form mt-5' onSubmit={formikEditData.handleSubmit}>
@@ -50,7 +50,8 @@ const EditData = () => {
                 </div>
 
                 <div className="d-flex justify-content-between mt-4">
-                <button type='submit' className="btn btn-success">                    
+                <button type='submit' className="btn btn-success"
+                  disabled={!formikEditData.dirty} >                    
                   submit
                   </button>
 
@@ -59,7 +60,7 @@ const EditData = () => {
                   </Link>
                 </div>
               </form>
-        </div>   
+        </>   
     )
 }
 

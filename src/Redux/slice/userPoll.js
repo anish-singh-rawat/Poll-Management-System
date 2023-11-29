@@ -2,15 +2,14 @@ import { createSlice } from "@reduxjs/toolkit";
 import { dispatch } from "../store/store";
 import Instance from "../../utilities/axios";
 
-const initialState = {
-    isLoading: false,
-    isSuccess: false,
-    isError: false,
-    data: [],
-};
 const pollSlice = createSlice({
     name: "poll",
-    initialState,
+    initialState : {
+        isLoading: false,
+        isSuccess: false,
+        isError: false,
+        data: [],
+    },
     reducers: {
         startLoading(state) {
             state.isLoading = true;
@@ -20,7 +19,7 @@ const pollSlice = createSlice({
             state.isLoading = false;
             state.isError = false;
             state.isSuccess = true;
-            state.data = { ...action.payload };
+            state.data = action.payload.data.reverse();
         },
         hasError(state, action) {
             state.isError = true;

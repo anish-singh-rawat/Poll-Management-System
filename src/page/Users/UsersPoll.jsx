@@ -5,11 +5,61 @@ import { pollManage } from '../../Redux/slice/AdminPoll';
 import { useNavigate } from 'react-router-dom';
 import { resetReducer } from '../../Redux/slice/login';
 import { VoteData } from '../../Redux/slice/AddVote';
+import { TablePagination } from '@mui/material';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const UsersPoll = () => {
+
+  const [page, setPage] = useState(0);
+  const [rowsPerPageOption, setRowPerPageOption] = useState([5, 10, 15]);
+  const handlePageChange = (event, updatedPage) => setPage(updatedPage)
+
+  const handleRowPerPageChange = (event) => {
+    setRowPerPage(event.target.value)
+    setPage(0)
+  }
+
+  const row = () => {
+    if (localStorage.getItem("rowpage")) {
+      return JSON.parse(localStorage.getItem("rowpage"));
+    }
+    return 5;
+  };
+
+  const [rowPerPage, setRowPerPage] = useState(row());
+  useEffect(() => {
+    localStorage.setItem("page", page);
+    localStorage.setItem("rowpage", rowPerPage);
+  }, [page, rowPerPage]);
+
+  useEffect(() => {
+    const data = JSON.parse(localStorage.getItem("page"));
+    if (data) {
+      setPage(parseInt(data));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("page", page);
+    localStorage.setItem("rowpage", rowPerPage);
+  }, [page, rowPerPage]);
+
   const [disabledOptions, setDisabledOptions] = useState({});
-  const pollList = useSelector((state) => state.pollSlice.data.data);
+  const pollList = useSelector((state) => state.pollSlice.data);
   const token = localStorage.getItem('token');
+
+  
+  useEffect(() => {
+    const storedDisabledOptions = JSON.parse(localStorage.getItem("disabledOptions"));
+    if (storedDisabledOptions) {
+      setDisabledOptions(storedDisabledOptions);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("disabledOptions", JSON.stringify(disabledOptions));
+  }, [disabledOptions]);
 
   const header = {
     headers: {
@@ -18,10 +68,10 @@ const UsersPoll = () => {
   };
 
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     dispatch(pollManage());
-  }, [pollList]);
+  }, []);
 
   const logOut = () => {
     navigate('/login');
@@ -34,7 +84,9 @@ const UsersPoll = () => {
       ...prevOptions,
       [title]: true,
     }));
+    toast.success("Your Vote has been deployed")
   };
+
 
   if (!pollList) {
     return <h3 className='text-warning'> <center> Loading.... </center> </h3>;
@@ -42,6 +94,8 @@ const UsersPoll = () => {
 
   return (
     <>
+          <ToastContainer />
+
       <center>
         <h2 className='text-light'> welcome to User Poll</h2>
         <div className="float-right text-danger mx-5" onClick={() => logOut()}>
@@ -53,7 +107,7 @@ const UsersPoll = () => {
         <div className="row">
           <div className="col">
             {pollList.length > 0 &&
-              pollList.slice().reverse().map((dataList) => (
+              pollList.slice(page * rowPerPage, page * rowPerPage + rowPerPage).map((dataList) => (
                 <div className="card my-3" key={dataList._id}>
                   <div>
                     <div className="card-header bg-success">
@@ -68,11 +122,8 @@ const UsersPoll = () => {
                             name={`radio-${dataList._id}`}
                             id={`${index}`}
                             onChange={() =>
-                              inputVoteChange(dataList.title, dataList._id, option.option)
-                            }
-                            disabled={disabledOptions[dataList.title]}
-                          />
-
+                              inputVoteChange(dataList.title, dataList._id, option.option)}
+                            disabled={disabledOptions[dataList.title]} />
                           <label className="form-check-label mx-2" htmlFor={`radio-${dataList._id}-${index}`}>
                             <div className='text-sm text-md-lg text-lg-xl'>
                               {option.option}
@@ -88,17 +139,16 @@ const UsersPoll = () => {
         </div>
       </div>
 
-      <div className='d-flex justify-content-center mt-3 text-light'>
-        <p> Rows per page: </p>
-        <select
-          className='mx-3 mb-4 text-light'
-          style={{ background: 'none', border: 'none' }}
-        >
-          <option className='text-dark'>5</option>
-          <option className='text-dark'>10</option>
-          <option className='text-dark'>15</option>
-        </select>
-      </div>
+      <TablePagination
+        style={{ display: 'flex', justifyContent: 'center', color: 'white' }}
+        component="div"
+        rowsPerPageOptions={rowsPerPageOption}
+        count={pollList.length}
+        page={!pollList.length || pollList.length <= 0 ? 0 : page}
+        rowsPerPage={rowPerPage}
+        onPageChange={handlePageChange}
+        onRowsPerPageChange={handleRowPerPageChange} />
+
     </>
   );
 };

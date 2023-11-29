@@ -1,19 +1,28 @@
-import React, { useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { ToastContainer, toast } from 'react-toastify'
 import { dispatch } from '../../Redux/store/store'
 import { AddOption } from '../../Redux/slice/AddOption'
 
 const Option = () => {
+    const location = useLocation();
     const [optionData, setOptionData] = useState('');
     const { optionDataId } = useParams();
+
+    const optionsArray = location.state.map((option) => option.option);
+    
     const navigate = useNavigate();
     
     const handleForm = (e) => {
         e.preventDefault();
         if (optionData.trim() !== '') {
-            dispatch(AddOption(optionDataId, optionData));
-            navigate('/AdminPoll');
+            if (optionsArray.includes(optionData)) {
+                toast.error('Duplicate options are not allowed');
+              } 
+            else{
+                dispatch(AddOption(optionDataId, optionData));
+                navigate('/AdminPoll');
+            }
         } else {
             toast.error("Please enter data");
         }

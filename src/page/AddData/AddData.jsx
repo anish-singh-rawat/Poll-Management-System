@@ -10,6 +10,12 @@ const AddData = () => {
     const [newOptions, setNewOptions] = useState([{ option: '' }]);
     const navigate = useNavigate()
 
+    const hasDuplicates = (newOptions) => {
+        const valuesSet = new Set(newOptions.map((item) => item.option.trim()));
+        return newOptions.length !== valuesSet.size;
+    };
+    
+
     const formikData = useFormik({
         initialValues: {
             title: '',
@@ -18,10 +24,17 @@ const AddData = () => {
             try {
                 if (values.title.trim() !== '') {
                     if (newOptions[0].option.trim() !== '') {
-                        dispatch(listData(values, newOptions));
-                        toast.success("data add successfully")
-                        navigate('/adminpoll')
+                        if (hasDuplicates(newOptions)) {
+                            toast.error('Options cannot be the same');
+                            return;
+                        }
+
+                       dispatch(listData(values, newOptions));
+                        setTimeout(() => {
+                            navigate('/adminpoll')
+                        }, 200);
                     }
+
                     else {
                         toast.warning('Please enter Opions')
                     }
@@ -51,8 +64,7 @@ const AddData = () => {
         onchangeValue[index][name] = value
         setNewOptions(onchangeValue)
     }
-
-
+    
     return (
         <div>
             <ToastContainer />
@@ -65,7 +77,7 @@ const AddData = () => {
                         onChange={formikData.handleChange} placeholder="Enter message title" />
 
                     {formikData.errors.title &&
-                    <p className="text-danger">{formikData.errors.title}</p>}
+                        <p className="text-danger">{formikData.errors.title}</p>}
                 </div>
                 {
                     newOptions.map((items, index) => (
@@ -86,9 +98,9 @@ const AddData = () => {
                     <h2 onClick={() => increseLength()}>+</h2>
                 </div>
                 <div className="d-flex justify-content-between mt-4">
-                    <button type='submit' className="btn btn-success">
-                        Submit
-                    </button>
+                            <button type='submit' className="btn btn-success">
+                                Submit
+                            </button>
                     <Link to={'/adminPoll'} className="btn btn-danger">
                         cancel
                     </Link>
