@@ -9,10 +9,9 @@ import { useSelector } from 'react-redux';
 import { jwtDecode } from 'jwt-decode';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
-import { Backdrop, Button, CircularProgress, Snackbar } from '@mui/material';
+import {CircularProgress } from '@mui/material';
 
 const Login = () => {
-  const [showOutlet, setShowOutlet] = useState(false)
   const [buttonDisable, setButtonDisable] = useState(false)
   const navigate = useNavigate()
 
@@ -27,10 +26,8 @@ const Login = () => {
       dispatch(resetReducer());
       if (decoded.role === "admin" || decoded.role === "Admin") {
         navigate("/adminPoll");
-        setShowOutlet(true)
       } else if (decoded.role === "Guest" || decoded.role === "guest") {
         navigate("/userPoll");
-        setShowOutlet(true)
       }
     }
 
@@ -58,13 +55,10 @@ const Login = () => {
     validationSchema: schema,
   });
 
+
   return (
     <>
       <ToastContainer />
-      {
-        showOutlet ? 
-        <Outlet/>
-        :
         <div className="container-fluid containe-for-sub-box ">
         <div className="row">
           <div className="col">
@@ -121,8 +115,6 @@ const Login = () => {
             </div>
           </div>
         </div>
-      }
-
       </>
       )
 }

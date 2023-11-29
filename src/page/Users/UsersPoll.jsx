@@ -74,8 +74,8 @@ const UsersPoll = () => {
   }, []);
 
   const logOut = () => {
-    navigate('/login');
-    dispatch(resetReducer());
+    navigate('/');
+    localStorage.clear();
   };
 
   const inputVoteChange = (title, OptionId, OptionData) => {

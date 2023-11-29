@@ -13,7 +13,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { TablePagination } from '@mui/material';
 import { dispatch } from '../../Redux/store/store';
 
-const AdminPoll = () => {
+const AdminPoll = ({ setShowOutlet }) => {
 
   const [page, setPage] = useState(0);
   const [rowsPerPageOption, setRowPerPageOption] = useState([5,10,15]);
@@ -62,8 +62,8 @@ const AdminPoll = () => {
   }, [deleteTitleLoading, editTitleSliceLoading, deleteOptionLoading, addOptionSliceLoading, listDataloading]);
 
   const logOut = () => {
-    navigate('/login');
-    dispatch(resetReducer());
+    navigate('/');
+    localStorage.clear();
   };
 
   const deleteTitleData = (titleID) => {
