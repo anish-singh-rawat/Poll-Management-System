@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { dispatch } from '../../Redux/store/store';
 import './Login.css'
-import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useFormik } from 'formik';
 import { schema } from '../../utilities/utilities';
 import { login, resetReducer } from '../../Redux/slice/login';
@@ -12,7 +12,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { Backdrop, Button, CircularProgress, Snackbar } from '@mui/material';
 
 const Login = () => {
-
+  const [showOutlet, setShowOutlet] = useState(false)
   const [buttonDisable, setButtonDisable] = useState(false)
   const navigate = useNavigate()
 
@@ -27,8 +27,10 @@ const Login = () => {
       dispatch(resetReducer());
       if (decoded.role === "admin" || decoded.role === "Admin") {
         navigate("/adminPoll");
+        setShowOutlet(true)
       } else if (decoded.role === "Guest" || decoded.role === "guest") {
         navigate("/userPoll");
+        setShowOutlet(true)
       }
     }
 
@@ -59,7 +61,11 @@ const Login = () => {
   return (
     <>
       <ToastContainer />
-      <div className="container-fluid containe-for-sub-box ">
+      {
+        showOutlet ? 
+        <Outlet/>
+        :
+        <div className="container-fluid containe-for-sub-box ">
         <div className="row">
           <div className="col">
             <div className="parent-form-div">
@@ -115,6 +121,8 @@ const Login = () => {
             </div>
           </div>
         </div>
+      }
+
       </>
       )
 }

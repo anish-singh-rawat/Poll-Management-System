@@ -11,11 +11,14 @@ import Option from '../page/AddOption/Option'
 export default function Router() {
   return (
     <Routes>
-        <Route path='/' element={<Login/> }/>
-        <Route path='/login' element={<Login/> }/>
-        <Route path='/signup' element={<SignUp/> }/>
+      
+        <Route path='/' element={<Login/> }>
         <Route path='/adminPoll' element={<AdminPoll/> }/>
         <Route path='/userPoll' element={<UsersPoll/> }/>
+        </Route>
+
+        <Route path='/login' element={<Login/> }/>
+        <Route path='/signup' element={<SignUp/> }/>
         <Route path='/AddData' element={<AddData/> }/>
         <Route path='/Editdata/:editDataId' element={<EditData/> }/>
         <Route path='/AddOption/:optionDataId' element={<Option/> }/>

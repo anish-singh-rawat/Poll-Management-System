@@ -127,7 +127,7 @@ const AdminPoll = () => {
                         )}
 
                         <Link to={`/Editdata/${dataList._id}`} 
-                        state={dataList.title} className="fa-regular fa-pen-to-square mx-5 text-light"></Link>
+                        state={dataList.title.options} className="fa-regular fa-pen-to-square mx-5 text-light"></Link>
 
                         <i className="fa-solid fa-trash" onClick={() => deleteTitleData(dataList._id)}></i>
                       </div>
