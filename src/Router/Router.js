@@ -23,18 +23,18 @@ export default function Router() {
     <Routes>
 
       <Route path='/' element={<Login />}></Route>
-
+      
       <Route exact path="/adminPoll" element={<PrivateRoute login={(localStorage.getItem("token")&& localStorage.getItem("role") === "admin")}>  <AdminPoll /></PrivateRoute>}>
       </Route>
 
       <Route exact path="/userPoll" element={<PrivateRoute login={(localStorage.getItem("token") && localStorage.getItem("role") === "guest")}>  <UsersPoll /></PrivateRoute>}>
-
       </Route>
 
       <Route path='/signup' element={<SignUp />} ></Route>
       <Route path='/AddData' element={<AddData />} ></Route>
       <Route path='/Editdata/:editDataId' element={<EditData />} ></Route>
       <Route path='/AddOption/:optionDataId' element={<Option />} ></Route>
+
     </Routes>
   )
 }
