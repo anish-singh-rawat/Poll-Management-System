@@ -65,7 +65,7 @@ const AdminPoll = () => {
   }, [deleteTitleLoading, editTitleSliceLoading, deleteOptionLoading, addOptionSliceLoading, listDataloading]);
 
   const logOut = () => {
-    navigate('/');
+    navigate('/login');
     localStorage.clear();
   };
 
@@ -79,7 +79,7 @@ const AdminPoll = () => {
     setOptionData(optionText.option)
   };
 
-  if (!pollList ||  addOptionSliceLoading || editTitleSliceLoading || listDataloading || addVoteLoading) {
+  if (!pollList ||  addOptionSliceLoading || editTitleSliceLoading || listDataloading || addVoteLoading ) {
     return (
       <h3>
         <center className="text-warning"> Loading... </center>

@@ -19,18 +19,28 @@ export default function Router() {
     localStorage.getItem("role");
   }, [loginSlice.isSuccess]);
 
+  const token = localStorage.getItem('token');
+  const role = localStorage.getItem("role");
+  const isToken = role && token;
+
   return (
     <Routes>
+      
+      {
+      isToken &&  <Route path='/' element={role === "admin" ?  
+      <AdminPoll /> : <UsersPoll /> } />
+      }
 
       <Route path='/' element={<Login />}></Route>
-      
-      <Route exact path="/adminPoll" element={<PrivateRoute login={(localStorage.getItem("token")&& localStorage.getItem("role") === "admin")}>  <AdminPoll /></PrivateRoute>}>
+
+      <Route exact path="/adminPoll" element={<PrivateRoute login={(localStorage.getItem("token") && localStorage.getItem("role") === "admin")}>  <AdminPoll /></PrivateRoute>}>
       </Route>
 
       <Route exact path="/userPoll" element={<PrivateRoute login={(localStorage.getItem("token") && localStorage.getItem("role") === "guest")}>  <UsersPoll /></PrivateRoute>}>
       </Route>
 
       <Route path='/signup' element={<SignUp />} ></Route>
+      <Route path='/login' element={<Login />} ></Route>
       <Route path='/AddData' element={<AddData />} ></Route>
       <Route path='/Editdata/:editDataId' element={<EditData />} ></Route>
       <Route path='/AddOption/:optionDataId' element={<Option />} ></Route>
