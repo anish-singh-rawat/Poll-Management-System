@@ -3,9 +3,8 @@ import { useSelector } from 'react-redux';
 import { dispatch } from '../../Redux/store/store';
 import { pollManage } from '../../Redux/slice/AdminPoll';
 import { useNavigate } from 'react-router-dom';
-import { resetReducer } from '../../Redux/slice/login';
 import { VoteData } from '../../Redux/slice/AddVote';
-import { TablePagination } from '@mui/material';
+import { Backdrop, CircularProgress, TablePagination } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -47,9 +46,10 @@ const UsersPoll = () => {
 
   const [disabledOptions, setDisabledOptions] = useState({});
   const pollList = useSelector((state) => state.pollSlice.data);
+  const pollListLoading = useSelector((state) => state.pollSlice.isLoading);
   const token = localStorage.getItem('token');
 
-  
+
   useEffect(() => {
     const storedDisabledOptions = JSON.parse(localStorage.getItem("disabledOptions"));
     if (storedDisabledOptions) {
@@ -74,8 +74,8 @@ const UsersPoll = () => {
   }, []);
 
   const logOut = () => {
-    navigate('/login');
-    dispatch(resetReducer());
+    navigate('/');
+    localStorage.clear();
   };
 
   const inputVoteChange = (title, OptionId, OptionData) => {
@@ -88,13 +88,20 @@ const UsersPoll = () => {
   };
 
 
-  if (!pollList) {
-    return <h3 className='text-warning'> <center> Loading.... </center> </h3>;
+  if (!pollList || pollListLoading) {
+    return(
+    <h3>
+      <center className="text-warning"> Loading... </center>
+      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={true}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+    </h3>
+    )
   }
 
   return (
     <>
-          <ToastContainer />
+      <ToastContainer />
 
       <center>
         <h2 className='text-light'> welcome to User Poll</h2>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { ToastContainer, toast } from 'react-toastify'
 import { dispatch } from '../../Redux/store/store'
@@ -10,7 +10,7 @@ const Option = () => {
     const { optionDataId } = useParams();
 
     const optionsArray = location.state.map((option) => option.option);
-    
+
     const navigate = useNavigate();
     
     const handleForm = (e) => {

@@ -15,11 +15,13 @@ import { dispatch } from '../../Redux/store/store';
 
 const AdminPoll = () => {
 
+  const [deleteTitleId, setDeleteId] = useState(null)
+  const [optionData, setOptionData] = useState(null)
   const [page, setPage] = useState(0);
-  const [rowsPerPageOption, setRowPerPageOption] = useState([5,10,15]);
-  const handlePageChange = (event, updatedPage)=> setPage(updatedPage)
+  const [rowsPerPageOption, setRowPerPageOption] = useState([5, 10, 15]);
+  const handlePageChange = (event, updatedPage) => setPage(updatedPage)
 
-  const handleRowPerPageChange = (event)=>{
+  const handleRowPerPageChange = (event) => {
     setRowPerPage(event.target.value)
     setPage(0)
   }
@@ -32,12 +34,12 @@ const AdminPoll = () => {
   };
 
   const [rowPerPage, setRowPerPage] = useState(row());
-  
+
   useEffect(() => {
     const page = JSON.parse(localStorage.getItem("page"));
     const rowpage = JSON.parse(localStorage.getItem("rowpage"));
 
-    if (page , rowpage) {
+    if (page, rowpage) {
       setPage(parseInt(page));
       setRowPerPage(parseInt(rowpage));
     }
@@ -54,6 +56,7 @@ const AdminPoll = () => {
   const editTitleSliceLoading = useSelector((state) => state.editTitleSlice.isLoading);
   const addOptionSliceLoading = useSelector((state) => state.addOptionSlice.isLoading);
   const listDataloading = useSelector((state) => state.listDataSlice.isLoading)
+  const addVoteLoading = useSelector((state)=> state.addVote.isLoading)
 
   const navigate = useNavigate();
 
@@ -63,18 +66,20 @@ const AdminPoll = () => {
 
   const logOut = () => {
     navigate('/login');
-    dispatch(resetReducer());
+    localStorage.clear();
   };
 
   const deleteTitleData = (titleID) => {
     dispatch(DeleteTitle(titleID));
+    setDeleteId(titleID)
   };
 
   const deleteOptionData = (optionInd, optionText) => {
     dispatch(deleteOption(optionInd, optionText.option));
+    setOptionData(optionText.option)
   };
 
-  if (!pollList || deleteTitleLoading || deleteOptionLoading || addOptionSliceLoading || editTitleSliceLoading || listDataloading ) {
+  if (!pollList ||  addOptionSliceLoading || editTitleSliceLoading || listDataloading || addVoteLoading ) {
     return (
       <h3>
         <center className="text-warning"> Loading... </center>
@@ -84,7 +89,6 @@ const AdminPoll = () => {
       </h3>
     );
   }
-
 
   return (
     <>
@@ -109,7 +113,7 @@ const AdminPoll = () => {
         <div className="row">
           <div className="col">
             {pollList.length > 0 &&
-              pollList.slice(page * rowPerPage, page*rowPerPage + rowPerPage).map((dataList) => (
+              pollList.slice(page * rowPerPage, page * rowPerPage + rowPerPage).map((dataList) => (
                 <div key={dataList._id}>
                   <div className="card mt-3">
                     <div className="card-header bg-success text-light ">
@@ -117,6 +121,7 @@ const AdminPoll = () => {
                         {dataList.title}
                       </h5>
                       <div className="shift-right d-flex justify-content-around">
+                      
                         {dataList.options.length < 4 && (
                           <Link
                             to={`/AddOption/${dataList._id}`}
@@ -126,10 +131,21 @@ const AdminPoll = () => {
                           ></Link>
                         )}
 
-                        <Link to={`/Editdata/${dataList._id}`} 
-                        state={dataList.title} className="fa-regular fa-pen-to-square mx-5 text-light"></Link>
+                        <Link to={`/Editdata/${dataList._id}`}
+                          state={dataList.title}
+                          className="fa-regular fa-pen-to-square mx-5 text-light">
+                        </Link>
 
-                        <i className="fa-solid fa-trash" onClick={() => deleteTitleData(dataList._id)}></i>
+                        {
+
+                         dataList._id === deleteTitleId
+                         && deleteTitleLoading ?
+                            <CircularProgress color="inherit" />
+                            :
+                            <i className="fa-solid fa-trash"
+                             onClick={() => deleteTitleData(dataList._id)}></i>
+                        }
+
                       </div>
                     </div>
                     <div className="card-body">
@@ -143,7 +159,14 @@ const AdminPoll = () => {
                             <div className="icons d-flex">
                               <div className="vote-div mx-5">vote : {option.vote}</div>
 
-                              <i className="fa-solid fa-trash" onClick={() => deleteOptionData(dataList._id, option)}></i>
+                              {
+                                optionData == option.option &&
+                                deleteOptionLoading ? 
+                                <CircularProgress color="inherit" />
+                                :
+                                <i className="fa-solid fa-trash" onClick={() => deleteOptionData(dataList._id, option)}></i>
+                              }
+
                             </div>
                           </div>
                         </div>
@@ -154,19 +177,18 @@ const AdminPoll = () => {
               ))}
           </div>
         </div>
-    
+
       </div>
 
-    
       <TablePagination
-       style={{ display : 'flex', justifyContent: 'center' ,color : 'white'}}
+        style={{ display: 'flex', justifyContent: 'center', color: 'white' }}
         component="div"
         rowsPerPageOptions={rowsPerPageOption}
         count={pollList.length}
-        page={!pollList.length || pollList.length<= 0? 0 : page}
+        page={!pollList.length || pollList.length <= 0 ? 0 : page}
         rowsPerPage={rowPerPage}
         onPageChange={handlePageChange}
-        onRowsPerPageChange={handleRowPerPageChange}/>
+        onRowsPerPageChange={handleRowPerPageChange} />
 
     </>
   );
