@@ -45,7 +45,6 @@ const SignUp = () => {
         else {
           dispatch(signup(values));
           dispatch(resetReducer());
-        
         }
       }
       catch (error) {

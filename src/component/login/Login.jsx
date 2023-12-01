@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 import { jwtDecode } from 'jwt-decode';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
-import {CircularProgress } from '@mui/material';
+import { CircularProgress } from '@mui/material';
 
 const Login = () => {
   const [buttonDisable, setButtonDisable] = useState(false)
@@ -22,11 +22,12 @@ const Login = () => {
     if (loginSlice.isSuccess && loginSlice.data.token) {
       const decoded = jwtDecode(loginSlice.data.token);
       localStorage.setItem("token", loginSlice.data.token);
-      localStorage.setItem("role", decoded.role);
+      localStorage.setItem("role", decoded.role.toLowerCase());
       dispatch(resetReducer());
-      if (decoded.role === "admin" || decoded.role === "Admin") {
+      if (decoded.role.toLowerCase() === "admin") {
         navigate("/adminPoll");
-      } else if (decoded.role === "Guest" || decoded.role === "guest") {
+      }
+      else if (decoded.role.toLowerCase() === "guest") {
         navigate("/userPoll");
       }
     }
@@ -55,11 +56,10 @@ const Login = () => {
     validationSchema: schema,
   });
 
-
   return (
     <>
       <ToastContainer />
-        <div className="container-fluid containe-for-sub-box ">
+      <div className="container-fluid containe-for-sub-box ">
         <div className="row">
           <div className="col">
             <div className="parent-form-div">
@@ -109,14 +109,14 @@ const Login = () => {
                       don't have account ? register now
                     </Link>
                   </center>
-                    </form>
-                  </div>
+                </form>
               </div>
             </div>
           </div>
         </div>
-      </>
-      )
+      </div>
+    </>
+  )
 }
 
-      export default Login
+export default Login

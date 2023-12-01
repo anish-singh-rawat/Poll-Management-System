@@ -14,7 +14,6 @@ import { TablePagination } from '@mui/material';
 import { dispatch } from '../../Redux/store/store';
 
 const AdminPoll = () => {
-
   const [deleteTitleId, setDeleteId] = useState(null)
   const [optionData, setOptionData] = useState(null)
   const [page, setPage] = useState(0);
@@ -56,7 +55,7 @@ const AdminPoll = () => {
   const editTitleSliceLoading = useSelector((state) => state.editTitleSlice.isLoading);
   const addOptionSliceLoading = useSelector((state) => state.addOptionSlice.isLoading);
   const listDataloading = useSelector((state) => state.listDataSlice.isLoading)
-  const addVoteLoading = useSelector((state)=> state.addVote.isLoading)
+  const addVoteLoading = useSelector((state) => state.addVote.isLoading)
 
   const navigate = useNavigate();
 
@@ -65,8 +64,8 @@ const AdminPoll = () => {
   }, [deleteTitleLoading, editTitleSliceLoading, deleteOptionLoading, addOptionSliceLoading, listDataloading]);
 
   const logOut = () => {
-    navigate('/login');
     localStorage.clear();
+    navigate('/login');
   };
 
   const deleteTitleData = (titleID) => {
@@ -79,7 +78,7 @@ const AdminPoll = () => {
     setOptionData(optionText.option)
   };
 
-  if (!pollList ||  addOptionSliceLoading || editTitleSliceLoading || listDataloading || addVoteLoading ) {
+  if (!pollList || addOptionSliceLoading || editTitleSliceLoading || listDataloading || addVoteLoading) {
     return (
       <h3>
         <center className="text-warning"> Loading... </center>
@@ -121,7 +120,7 @@ const AdminPoll = () => {
                         {dataList.title}
                       </h5>
                       <div className="shift-right d-flex justify-content-around">
-                      
+
                         {dataList.options.length < 4 && (
                           <Link
                             to={`/AddOption/${dataList._id}`}
@@ -138,12 +137,12 @@ const AdminPoll = () => {
 
                         {
 
-                         dataList._id === deleteTitleId
-                         && deleteTitleLoading ?
+                          dataList._id === deleteTitleId
+                            && deleteTitleLoading ?
                             <CircularProgress color="inherit" />
                             :
                             <i className="fa-solid fa-trash"
-                             onClick={() => deleteTitleData(dataList._id)}></i>
+                              onClick={() => deleteTitleData(dataList._id)}></i>
                         }
 
                       </div>
@@ -161,10 +160,10 @@ const AdminPoll = () => {
 
                               {
                                 optionData == option.option &&
-                                deleteOptionLoading ? 
-                                <CircularProgress color="inherit" />
-                                :
-                                <i className="fa-solid fa-trash" onClick={() => deleteOptionData(dataList._id, option)}></i>
+                                  deleteOptionLoading ?
+                                  <CircularProgress color="inherit" />
+                                  :
+                                  <i className="fa-solid fa-trash" onClick={() => deleteOptionData(dataList._id, option)}></i>
                               }
 
                             </div>
@@ -189,7 +188,6 @@ const AdminPoll = () => {
         rowsPerPage={rowPerPage}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleRowPerPageChange} />
-
     </>
   );
 };

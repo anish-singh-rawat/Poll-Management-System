@@ -74,7 +74,7 @@ const UsersPoll = () => {
   }, []);
 
   const logOut = () => {
-    navigate('/');
+    navigate('/login');
     localStorage.clear();
   };
 
