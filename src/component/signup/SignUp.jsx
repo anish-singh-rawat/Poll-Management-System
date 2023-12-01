@@ -22,7 +22,7 @@ const SignUp = () => {
     }
     else if (signupSlice.data.error === 0) {
       toast.success('signUp successfully')
-      navigate("/login")
+      navigate("/")
       dispatch(resetReducer())
     }
   }, [signupSlice.isSuccess])

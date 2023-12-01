@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useNavigate } from 'react-router-dom'
 import Login from '../component/login/Login'
 import SignUp from '../component/signup/SignUp'
 import AdminPoll from '../page/Admins/AdminPoll'
@@ -13,6 +13,7 @@ import PrivateRoute from './PrivateRoute'
 export default function Router() {
 
   const loginSlice = useSelector((state) => state.loginSlice);
+  const Navigate = useNavigate()
 
   useEffect(() => {
     localStorage.getItem("token");
@@ -21,7 +22,11 @@ export default function Router() {
 
   const token = localStorage.getItem('token');
   const role = localStorage.getItem("role");
-  const isToken = role && token;
+  const isToken = role && token ? true : false ;
+
+  useEffect(()=>{
+    Navigate('/')
+  },[isToken])
 
   return (
     <Routes>
@@ -38,7 +43,7 @@ export default function Router() {
       </Route>
 
       <Route path='/signup' element={<SignUp />}> </Route>
-      <Route path='/login' element={<Login />}> </Route>
+      {/* <Route path='/login' element={<Login />}> </Route> */}
       <Route path='/AddData' element={<AddData />} > </Route>
       <Route path='/Editdata/:editDataId' element={<EditData />}> </Route>
       <Route path='/AddOption/:optionDataId' element={<Option />}> </Route>
