@@ -65,9 +65,10 @@ const AdminPoll = () => {
 
   const logOut = () => {
     localStorage.clear();
-    navigate('/login');
+    navigate('/');
   };
 
+  
   const deleteTitleData = (titleID) => {
     dispatch(DeleteTitle(titleID));
     setDeleteId(titleID)
